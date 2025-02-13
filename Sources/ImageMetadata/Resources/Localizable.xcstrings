@@ -1,0 +1,417 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ is not a file URL." : {
+
+    },
+    "A head only view of a person (or animal/s) or persons as in a montage." : {
+
+    },
+    "A panoramic or wide angle view of a subject and its surrounds." : {
+
+    },
+    "A photo taken during darkness." : {
+
+    },
+    "A photo taken from a satellite in orbit." : {
+
+    },
+    "A photo taken under water." : {
+
+    },
+    "A photo that shows the exterior of a building or other object." : {
+
+    },
+    "A posed picture symbolizing an event - two rings for marriage." : {
+
+    },
+    "A scene or view of the interior of a building or other object." : {
+
+    },
+    "A torso and head view of a person or persons." : {
+
+    },
+    "A view from head to toe of a person or persons." : {
+
+    },
+    "A view of a person from the side." : {
+
+    },
+    "A view of a person or persons from the rear." : {
+
+    },
+    "A view of more than two people." : {
+
+    },
+    "A view of only one person, object or animal." : {
+
+    },
+    "A view of two people who are in a personal relationship, for example engaged, married or in a romantic partnership." : {
+
+    },
+    "A view of two people." : {
+
+    },
+    "A view of, or part of a person/object taken at close range in order to emphasize detail or accentuate mood. Macro photography." : {
+
+    },
+    "A view taken from above." : {
+
+    },
+    "action" : {
+
+    },
+    "Action program" : {
+
+    },
+    "aerial view" : {
+
+    },
+    "An attractive, perhaps fun picture of everyday events - dog with sunglasses, people cooling off in the fountain." : {
+
+    },
+    "An overall view of the subject and its surrounds." : {
+
+    },
+    "An unknown error occurred." : {
+
+    },
+    "Aperture priority" : {
+
+    },
+    "Auto bracket" : {
+
+    },
+    "Auto exposure" : {
+
+    },
+    "Auto white balance" : {
+
+    },
+    "Average" : {
+
+    },
+    "Cannot access %@" : {
+
+    },
+    "Center weighted average" : {
+
+    },
+    "Close view" : {
+
+    },
+    "close-up" : {
+
+    },
+    "Cloudy weather" : {
+
+    },
+    "Color sequential area sensor" : {
+
+    },
+    "Color sequential linear sensor" : {
+
+    },
+    "Cool white fluorescent (W 3900 – 4500K)" : {
+
+    },
+    "couple" : {
+
+    },
+    "Creative program" : {
+
+    },
+    "Custom process" : {
+
+    },
+    "D50" : {
+
+    },
+    "D55" : {
+
+    },
+    "D65" : {
+
+    },
+    "D70" : {
+
+    },
+    "Day white fluorescent (N 4600 – 5400K)" : {
+
+    },
+    "Daylight" : {
+
+    },
+    "Daylight fluorescent (D 5700 – 7100K)" : {
+
+    },
+    "Distant view" : {
+
+    },
+    "down" : {
+
+    },
+    "downMirrored" : {
+
+    },
+    "Email addresses for the contact." : {
+
+    },
+    "exterior view" : {
+
+    },
+    "Failed to read image properties." : {
+
+    },
+    "Failed to read image source." : {
+
+    },
+    "Fine weather" : {
+
+    },
+    "Flash" : {
+
+    },
+    "Fluorescent" : {
+
+    },
+    "full-length" : {
+
+    },
+    "general view" : {
+
+    },
+    "group" : {
+
+    },
+    "half-length" : {
+
+    },
+    "Hard" : {
+
+    },
+    "headshot" : {
+
+    },
+    "High saturation" : {
+
+    },
+    "interior view" : {
+
+    },
+    "Invalid content type." : {
+
+    },
+    "ISO studio tungsten" : {
+
+    },
+    "key not found '%@')." : {
+
+    },
+    "Landscape" : {
+
+    },
+    "Landscape mode" : {
+
+    },
+    "left" : {
+
+    },
+    "leftMirrored" : {
+
+    },
+    "Low saturation" : {
+
+    },
+    "Macro" : {
+
+    },
+    "Manual" : {
+
+    },
+    "Manual exposure" : {
+
+    },
+    "Manual white balance" : {
+
+    },
+    "movie scene" : {
+
+    },
+    "Multi Spot" : {
+
+    },
+    "night scene" : {
+
+    },
+    "Night scene" : {
+
+    },
+    "Normal" : {
+
+    },
+    "Normal process" : {
+
+    },
+    "Normal program" : {
+
+    },
+    "Not defined" : {
+
+    },
+    "off-beat" : {
+
+    },
+    "One-chip color area sensor" : {
+
+    },
+    "Other" : {
+
+    },
+    "Other light source" : {
+
+    },
+    "panoramic view" : {
+
+    },
+    "Partial" : {
+
+    },
+    "Pattern" : {
+
+    },
+    "performing" : {
+
+    },
+    "Phone numbers for the contact." : {
+
+    },
+    "Photos taken during the shooting of a movie or TV production." : {
+
+    },
+    "Please select a file you have permission to access." : {
+
+    },
+    "Please select a valid file." : {
+
+    },
+    "Please select an image file." : {
+
+    },
+    "Portrait" : {
+
+    },
+    "Portrait mode" : {
+
+    },
+    "posing" : {
+
+    },
+    "profile" : {
+
+    },
+    "rear view" : {
+
+    },
+    "right" : {
+
+    },
+    "rightMirrored" : {
+
+    },
+    "satellite" : {
+
+    },
+    "Shade" : {
+
+    },
+    "Shutter priority" : {
+
+    },
+    "single" : {
+
+    },
+    "Soft" : {
+
+    },
+    "Spot" : {
+
+    },
+    "Standard" : {
+
+    },
+    "Standard light A" : {
+
+    },
+    "Standard light B" : {
+
+    },
+    "Standard light C" : {
+
+    },
+    "Subject in motion such as children jumping, horse running." : {
+
+    },
+    "Subject or subjects on a stage performing to an audience." : {
+
+    },
+    "Subject or subjects posing such as a 'victory' pose or other stance that symbolizes leadership." : {
+
+    },
+    "symbolic" : {
+
+    },
+    "The address portion of the contact information." : {
+
+    },
+    "The city portion of the contact information." : {
+
+    },
+    "The country or region portion of the contact information." : {
+
+    },
+    "The file '%@' couldn’t be opened because it doesn’t exist." : {
+
+    },
+    "The postal code portion of the contact." : {
+
+    },
+    "The state or province of the contact." : {
+
+    },
+    "Three-chip color area sensor" : {
+
+    },
+    "Trilinear sensor" : {
+
+    },
+    "Tungsten (incandescent light)" : {
+
+    },
+    "two" : {
+
+    },
+    "Two-chip color area sensor" : {
+
+    },
+    "under-water" : {
+
+    },
+    "Unknown" : {
+
+    },
+    "up" : {
+
+    },
+    "upMirrored" : {
+
+    },
+    "Web addresses for the contact." : {
+
+    },
+    "White fluorescent (WW 3200 – 3700K)" : {
+
+    }
+  },
+  "version" : "1.0"
+}
