@@ -7,18 +7,18 @@ BUILDDIR = $(REPODIR)/.build
 BINNAME = imgmd
 
 build:
-    swift build -c release --disable-sandbox --build-path "$(BUILDDIR)"
+	swift build -c release --disable-sandbox --build-path "$(BUILDDIR)"
 
 install: build
-    install "$(BUILDDIR)/release/$(BINNAME)" "$(BINDIR)"
+	install "$(BUILDDIR)/release/$(BINNAME)" "$(BINDIR)"
 
 uninstall:
-    rm -rf "$(BINDIR)/$(BINNAME)"
+	rm -rf "$(BINDIR)/$(BINNAME)"
 
 clean:
-    rm -rf "$(BUILDDIR)"
-    
+	rm -rf "$(BUILDDIR)"
+
 test:
-    swift test
+	swift test
 
 .PHONY: build install uninstall clean test
