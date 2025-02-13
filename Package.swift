@@ -21,7 +21,10 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "ImageMetadata"
+            name: "ImageMetadata",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "ImageMetadataTests",
