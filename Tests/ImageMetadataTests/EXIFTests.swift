@@ -60,12 +60,16 @@ struct EXIFTests {
         #expect(exif.customRendered == nil)
     }
        
-    @Test func dateTimeOriginal() {
-        #expect(exif.dateTimeOriginal == Date(timeIntervalSinceReferenceDate: 735232275.0))
+    @Test func dateTimeOriginal() throws {
+        let date = try #require(exif.dateTimeOriginal)
+        let dateString = EXIF.dateFormatter.string(from: date)
+        #expect(dateString == "2024:04:19 08:11:15")
     }
     
-    @Test func dateTimeDigitized() {
-        #expect(exif.dateTimeDigitized == Date(timeIntervalSinceReferenceDate: 735232275.0))
+    @Test func dateTimeDigitized() throws {
+        let date = try #require(exif.dateTimeDigitized)
+        let dateString = EXIF.dateFormatter.string(from: date)
+        #expect(dateString == "2024:04:19 08:11:15")
     }
     
     @Test func deviceSettingDescription() {
