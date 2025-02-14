@@ -63,7 +63,7 @@ public struct IPTC: Metadata {
     /// [7.18. Keywords](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#keywords)
     public var keywords: [String]? {
         guard let keywords = rawValue[kCGImagePropertyIPTCKeywords] as? [String] else { return nil }
-        return keywords.isEmpty ? nil : keywords
+        return keywords.filter({ $0.isEmpty == false}).isEmpty ? nil : keywords
     }
     
     /// The content location code.

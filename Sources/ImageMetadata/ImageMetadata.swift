@@ -210,7 +210,7 @@ extension ImageMetadata: Encodable {
         }
         
         if options.contains(.iptc) {
-            try container.encodeIfPresent(exif, forKey: .iptc)
+            try container.encodeIfPresent(iptc, forKey: .iptc)
         }
         
         if options.contains(.tiff) {
