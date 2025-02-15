@@ -1,6 +1,6 @@
 import Foundation
 
-protocol Metadata: RawRepresentable & Encodable & CustomStringConvertible & CustomDebugStringConvertible {}
+public protocol Metadata: RawRepresentable & Encodable & CustomStringConvertible & CustomDebugStringConvertible {}
 
 extension Metadata {
     
