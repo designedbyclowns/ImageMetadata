@@ -35,7 +35,7 @@ extension IPTC {
 }
 
 extension IPTC.NewsCode.Scene {
-    /// A definition of a ``NewsCode.Scene``.
+    /// A definition of a ``IPTC/NewsCode/Scene``.
     public var definition: String {
         switch self {
         case .headshot:

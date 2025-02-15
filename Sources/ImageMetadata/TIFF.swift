@@ -2,13 +2,6 @@ import Foundation
 import ImageIO
 
 public struct TIFF: RawRepresentable {
-    public typealias RawValue = NSDictionary
-    
-    public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
-    }
-    
-    public let rawValue: NSDictionary
     
     // MARK: - Image Quality
     
@@ -114,6 +107,16 @@ public struct TIFF: RawRepresentable {
     public var hostComputer: String? {
         rawValue[kCGImagePropertyTIFFHostComputer] as? String
     }
+    
+    // MARK: - RawRepresentable
+    
+    public typealias RawValue = NSDictionary
+    
+    public init(rawValue: NSDictionary) {
+        self.rawValue = rawValue
+    }
+    
+    public let rawValue: NSDictionary
     
     // MARK: - Formatters
     

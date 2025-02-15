@@ -6,13 +6,6 @@ import ImageIO
 /// IPTC constants are metadata elements of the Information Interchange Model (IIM) used to provide information about images.
 /// The IIM was developed by the Newspaper Association of America (NAA) and the [IPTC](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#metadata-properties).
 public struct IPTC: Metadata {
-    public typealias RawValue = NSDictionary
-    
-    public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
-    }
-    
-    public let rawValue: NSDictionary
         
     // MARK: - Image Categorization
     
@@ -361,6 +354,16 @@ public struct IPTC: Metadata {
     public var objectName: String? {
         rawValue[kCGImagePropertyIPTCObjectName] as? String
     }
+    
+    // MARK: - RawRepresentable
+    
+    public typealias RawValue = NSDictionary
+    
+    public init(rawValue: NSDictionary) {
+        self.rawValue = rawValue
+    }
+    
+    public let rawValue: NSDictionary
     
     // MARK: - Formatters
     

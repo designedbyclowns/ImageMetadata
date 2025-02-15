@@ -3,14 +3,7 @@ import ImageIO
 
 /// Metadata defined by the [Exif Exchangeable Image File Format](https://www.loc.gov/preservation/digital/formats/fdd/fdd000146.shtml).
 public struct EXIF: Metadata {
-    public typealias RawValue = NSDictionary
-    
-    public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
-    }
-    
-    public var rawValue: NSDictionary
-        
+
     /// The aperture value.
     public var apertureValue: Double? {
         rawValue[kCGImagePropertyExifApertureValue] as? Double
@@ -46,11 +39,6 @@ public struct EXIF: Metadata {
     ///
     /// For compressed data, specifies that the channels of each component
     /// are arranged in increasing numeric order (from first component to the fourth).
-    ///
-    /// For uncompressed data the data arrangement is given in the ``photometricInterpretation`` tag.
-    /// However, since ``photometricInterpretation`` can only express the order
-    /// of Y, Cb and Cr, this tag is provided for cases when compressed data uses
-    ///  components other than Y, Cb, and Cr and to enable support of other sequences.
     public var componentsConfiguration: [Int]? {
         rawValue[kCGImagePropertyExifComponentsConfiguration] as? [Int]
     }
@@ -115,7 +103,7 @@ public struct EXIF: Metadata {
         rawValue[kCGImagePropertyExifExposureIndex] as? Double
     }
     
-    /// The exposure mode setting.
+    /// The ``EXIF/ExposureMode`` mode setting.
     ///
     ///  In auto-bracketing mode, the camera shoots a series of frames of the same scene at different exposure settings.
     public var exposureMode: EXIF.ExposureMode? {
@@ -123,7 +111,7 @@ public struct EXIF: Metadata {
         return EXIF.ExposureMode(rawValue: value)
     }
     
-    /// The exposure program.
+    /// The ``EXIF/ExposureProgram``.
     ///
     /// The program used by the camera to set exposure when the picture is taken.
     public var exposureProgram: EXIF.ExposureProgram? {
@@ -268,7 +256,7 @@ public struct EXIF: Metadata {
         rawValue[kCGImagePropertyExifMaxApertureValue] as? Double
     }
     
-    /// The metering mode.
+    /// The ``EXIF/MeteringMode``.
     public var meteringMode: EXIF.MeteringMode? {
         guard let value = rawValue[kCGImagePropertyExifMeteringMode] as? Int else { return nil }
         return EXIF.MeteringMode(rawValue: value)
@@ -284,13 +272,13 @@ public struct EXIF: Metadata {
     // FIXME: Undefined ^^^
     
     /// Time difference from Universal Time Coordinated (UTC) including
-    /// daylight saving time of ``dateTime`` tag.
+    /// daylight saving time of `DateTime` tag.
     public var offsetTime: String? {
         rawValue[kCGImagePropertyExifOffsetTime] as? String
     }
     
     /// Time difference from Universal Time Coordinated (UTC) including
-    /// daylight saving time of DateTimeDigitized tag.
+    /// daylight saving time of ``dateTimeDigitized`` tag.
     public var offsetTimeDigitized: String? {
         rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
     }
@@ -322,13 +310,13 @@ public struct EXIF: Metadata {
      }
     
     
-    /// The saturation setting.
+    /// The ``EXIF/Saturation`` setting.
     public var saturation: EXIF.Saturation? {
         guard let value = rawValue[kCGImagePropertyExifSaturation] as? Int else { return nil }
         return EXIF.Saturation(rawValue: value)
     }
     
-    /// The scene capture type; for example, standard, landscape, portrait, or night.
+    /// The ``EXIF/SceneCaptureType``; for example, standard, landscape, portrait, or night.
     public var sceneCaptureType: EXIF.SceneCaptureType? {
         guard let value = rawValue[kCGImagePropertyExifSceneCaptureType] as? Int else { return nil }
         return EXIF.SceneCaptureType(rawValue: value)
@@ -342,7 +330,7 @@ public struct EXIF: Metadata {
         rawValue[kCGImagePropertyExifSceneType] as? Int
     }
     
-    /// The sensor type of the camera or input device.
+    /// The ``EXIF/SensingMethod`` of the camera or input device.
     public var sensingMethod: EXIF.SensingMethod? {
         guard let value = rawValue[kCGImagePropertyExifSensingMethod] as? Int else { return nil }
         return EXIF.SensingMethod(rawValue: value)
@@ -354,7 +342,7 @@ public struct EXIF: Metadata {
     }
     
    
-    /// The sharpness setting.
+    /// The ``EXIF/Sharpness`` setting.
     public var sharpness: EXIF.Sharpness? {
         guard let value = rawValue[kCGImagePropertyExifSharpness] as? Int else { return nil }
         return EXIF.Sharpness(rawValue: value)
@@ -405,7 +393,7 @@ public struct EXIF: Metadata {
         rawValue[kCGImagePropertyExifSubjectDistance] as? Double
     }
     
-    /// The distance to the subject as an ``EXIF.SubjectDistanceRange``.
+    /// The distance to the subject as an ``EXIF/SubjectDistanceRange``.
     public var subjectDistanceRange: EXIF.SubjectDistanceRange? {
         guard let value = rawValue[kCGImagePropertyExifSubjectDistRange] as? Int else { return nil }
         return EXIF.SubjectDistanceRange(rawValue: value)
@@ -435,8 +423,8 @@ public struct EXIF: Metadata {
     /// A user comment.
     ///
     /// A tag for EXIF users to write keywords or comments on the image
-    /// besides those in ``imageDescription``, and without the character
-    /// code limitations of the ``ImageDescription`` tag.
+    /// besides those in `ImageDescription`, and without the character
+    /// code limitations of the `ImageDescription` tag.
     public var userComment: String? {
         rawValue[kCGImagePropertyExifUserComment] as? String
      }
@@ -454,6 +442,16 @@ public struct EXIF: Metadata {
         guard let value = rawValue[kCGImagePropertyExifWhiteBalance] as? Int else { return nil }
         return EXIF.WhiteBalance(rawValue: value)
     }
+    
+    // MARK: - RawRepresentable
+    
+    public typealias RawValue = NSDictionary
+    
+    public init(rawValue: NSDictionary) {
+        self.rawValue = rawValue
+    }
+    
+    public let rawValue: NSDictionary
     
     // MARK: - Formatters
     

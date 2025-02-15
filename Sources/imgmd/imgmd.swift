@@ -21,7 +21,9 @@ extension MetadataType {
     }
 }
 
-
+/// Extract image metadata.
+///
+/// See 'imgmd --help' for more information.
 @main
 struct imgmd: ParsableCommand {
     

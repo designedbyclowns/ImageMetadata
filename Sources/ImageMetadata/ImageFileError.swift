@@ -9,8 +9,11 @@ public struct ImageFileError: Error {
         case unknown
     }
     
+    /// The URL of the file this error pertains to.
     public let url: URL
+    /// The  ``Code``.
     public let code: Code
+    /// An optional underlying error.
     public let underlyingError: Error?
     
     public init(_ url: URL, code: Code = .unknown, underlyingError: Error? = nil) {

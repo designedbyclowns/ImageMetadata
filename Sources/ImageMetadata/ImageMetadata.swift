@@ -2,16 +2,9 @@ import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-/// A type that provide access to the metadata of an image.
+/// A type that provides access to the metadata of an image.
 public struct ImageMetadata: Metadata {
-    public typealias RawValue = NSDictionary
-    
-    public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
-    }
-    
-    public let rawValue: NSDictionary
-    
+    /// 
     public private(set) var options: MetadataOptions = .all
     
     // MARK: - Properties
@@ -127,11 +120,22 @@ public struct ImageMetadata: Metadata {
     }
     
     public private(set) var imageFile: ImageFile?
+    
+    // MARK: - RawRepresentable
+    
+    public typealias RawValue = NSDictionary
+    
+    public init(rawValue: NSDictionary) {
+        self.rawValue = rawValue
+    }
+    
+    public let rawValue: NSDictionary
 }
 
 extension ImageMetadata {
     /// Creates a new `ImageMetadata` from a URL.
     /// - Parameter url:A file URL.
+    ///- Parameter options: Metadata parsing options.
     public init(url: URL, options: MetadataOptions = .all) throws {
         let imageFile = try ImageFile(url: url)
         self = try .init(imageFile: imageFile, options: options)
@@ -149,6 +153,10 @@ extension ImageMetadata {
         self.imageFile = imageFile
     }
     
+    /// Creates a new `ImageMetadata` from a `CGImageSource`.
+    /// - Parameters:
+    ///   - imageSource: The `CGImageSource`.
+    ///   - options: Metadata parsing options.
     public init(imageSource: CGImageSource, options: MetadataOptions = .all) throws(MetadataError) {
         guard let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as NSDictionary? else {
             throw MetadataError.invalidImageProperties

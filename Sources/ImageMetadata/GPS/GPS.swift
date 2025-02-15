@@ -3,13 +3,6 @@ import ImageIO
 
 /// Metadata for an image that has Global Positioning System (GPS) information.
 public struct GPS: Metadata {
-    public typealias RawValue = NSDictionary
-    
-    public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
-    }
-    
-    public let rawValue: NSDictionary
     
     /// The altitude.
     public var altitude: Double? {
@@ -62,6 +55,18 @@ public struct GPS: Metadata {
         return Self.dateFormatter.date(from: "\(dateStamp) \(timeStamp)")
     }
     
+    // MARK: - RawRepresentable
+    
+    public typealias RawValue = NSDictionary
+    
+    public init(rawValue: NSDictionary) {
+        self.rawValue = rawValue
+    }
+    
+    public let rawValue: NSDictionary
+    
+    // MARK: - Formatters
+    
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
@@ -92,22 +97,5 @@ extension GPS: Encodable {
         try container.encodeIfPresent(longitudeReference, forKey: .longitudeReference)
         try container.encodeIfPresent(horizontalPositioningError, forKey: .horizontalPositioningError)
         try container.encodeIfPresent(date, forKey: .dateTime)
-    }
-}
-
-extension GPS: CustomStringConvertible {
-    public var description: String {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-        encoder.dateEncodingStrategy = .iso8601
-        
-        guard let json = try? encoder.encode(self) else { return "" }
-        return String(decoding: json, as: UTF8.self)
-    }
-}
-
-extension GPS: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        String(describing: rawValue)
     }
 }
