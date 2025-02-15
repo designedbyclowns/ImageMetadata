@@ -1,7 +1,7 @@
 import Foundation
 
 public struct ImageFileError: Error {
-    enum Code: Int {
+    public enum Code: Int, Sendable {
         case accessDenied
         case invalidContentType
         case invalidURL
@@ -9,11 +9,11 @@ public struct ImageFileError: Error {
         case unknown
     }
     
-    let url: URL
-    let code: Code
-    let underlyingError: Error?
+    public let url: URL
+    public let code: Code
+    public let underlyingError: Error?
     
-    init(_ url: URL, code: Code = .unknown, underlyingError: Error? = nil) {
+    public init(_ url: URL, code: Code = .unknown, underlyingError: Error? = nil) {
         self.url = url
         self.code = code
         self.underlyingError = underlyingError
