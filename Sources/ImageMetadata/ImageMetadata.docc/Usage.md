@@ -12,7 +12,7 @@ The example uses [View from the Window at Le Gras](https://en.wikipedia.org/wiki
 
 ![View from the Window at Le Gras.](WindowAtLeGras)
 
-Create an ImageMetadata type from a file URL:
+Create an ``ImageMetadata`` from a file URL:
 
 ```swift
 import Foundation
@@ -53,7 +53,7 @@ metadata?.description
   "contentType" : "public.jpeg",
   "dpiHeight" : 540,
   "exif" : {
-    "colorSpace" : 1,
+    "colorSpace" : "sRGB",
     "componentsConfiguration" : [
       1,
       2,
@@ -68,12 +68,14 @@ metadata?.description
     "offsetTimeOriginal" : "+02:00",
     "pixelXDimension" : 4530,
     "pixelYDimension" : 3810,
-    "sceneCaptureType" : "Standard",
+    "sceneCaptureType" : "standard",
     "subsecTime" : "002",
     "subsecTimeDigitized" : "002",
     "subsecTimeOriginal" : "002",
     "version" : "2.2.1"
   },
+  "fileSize" : "2.1 MB (2,240,988 bytes)",
+  "filename" : "WindowAtLeGras.jpg",
   "gps" : {
     "dateTime" : "2025-02-13T15:02:45Z",
     "horizontalPositioningError" : 1,
@@ -83,14 +85,6 @@ metadata?.description
     "longitudeReference" : "E"
   },
   "hasAlpha" : false,
-  "imageFile" : {
-    "basename" : "WindowAtLeGras",
-    "contentType" : "public.jpeg",
-    "fileSize" : "2.1 MB (2,240,988 bytes)",
-    "filename" : "WindowAtLeGras.jpg",
-    "path" : "Resources/WindowAtLeGras.jpg",
-    "url" : "file:///Resources/WindowAtLeGras.jpg"
-  },
   "iptc" : {
     "byline" : [
       "Joseph Nicéphore Niépce"
@@ -131,5 +125,3 @@ metadata?.description
   }
 }
 ```
-
-

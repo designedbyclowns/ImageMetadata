@@ -1,135 +1,143 @@
-import Foundation
-import ImageIO
-import UniformTypeIdentifiers
+public import Foundation
+public import ImageIO
+public import UniformTypeIdentifiers.UTType
 
 /// A type that provides access to the metadata of an image.
 public struct ImageMetadata: Metadata {
     /// 
     public private(set) var options: MetadataOptions = .all
-    
-    // MARK: - Properties
-    
+        
     /// The number of bits in each color sample of each pixel.
-    public var bitDepth: Int? {
-        rawValue[kCGImagePropertyDepth] as? Int
-    }
+    public let bitDepth: Int?
     
     /// The size of the image in bytes.
-    public var bytes: Int? {
-        rawValue[kCGImagePropertyFileSize] as? Int
-    }
+    public let bytes: Int?
     
     /// The size of the image as a `Measurement` type.
-    public var bytesMeasurement: Measurement<UnitInformationStorage>? {
-        guard let bytes else { return nil }
-        return Measurement(value: Double(bytes), unit: .bytes)
-    }
+    public let bytesMeasurement: Measurement<UnitInformationStorage>?
     
     /// The color model of the image such as "RGB", "CMYK", "Gray", or "Lab".
-    public var colorModel: String? {
-        rawValue[kCGImagePropertyColorModel] as? String
-    }
+    public let colorModel: String?
     
     /// The name of any optional ICC profile embedded in the image.
-    public var colorProfile: String? {
-        rawValue[kCGImagePropertyProfileName] as? String
-    }
+    public let colorProfile: String?
     
     /// The content type of the image.
     public private(set) var contentType: UTType?
     
     /// The resolution, in dots per inch, in the y dimension.
-    public var dpiHeight: Int? {
-        rawValue[kCGImagePropertyDPIHeight] as? Int
-    }
+    public let dpiHeight: Int?
     
     /// The resolution, in dots per inch, in the x dimension.
-    public var dpiWidth: Int? {
-        rawValue[kCGImagePropertyDPIWidth] as? Int
-    }
+    public let dpiWidth: Int?
     
     /// True if the image contains an alpha (a.k.a. coverage) channel.
-    public var hasAlpha: Bool {
-        rawValue[kCGImagePropertyHasAlpha] as? Bool ?? false
-    }
+    public let hasAlpha: Bool
     
     /// True if the image contains floating-point pixel samples.
-    public var isFloat: Bool {
-        rawValue[kCGImagePropertyIsFloat] as? Bool ?? false
-    }
+    public let isFloat: Bool
     
     /// True if the image contains indexed (a.k.a. paletted) pixel samples.
-    public var isIndexed: Bool {
-        rawValue[kCGImagePropertyIsIndexed] as? Bool ?? false
-    }
+    public let isIndexed: Bool
     
     /// The decoded byte size of the image.
-    public var memorySize: String? {
-        bytes?.formatted(
-            .byteCount(
-                style: .memory,
-                spellsOutZero: true,
-                includesActualByteCount: true
-            )
-        )
-    }
+    public let memorySize: String?
     
     /// The intended display orientation of the image.
-    public var orientation: ImageOrientation? {
-        guard let value = rawValue[kCGImagePropertyOrientation] as? UInt32 else { return nil }
-        return ImageOrientation(rawValue: value)
-    }
+    public let orientation: ImageOrientation?
     
     /// For information about how to interpret this value, see the PixelFormat tag in the EXIF specification.
-    public var pixelFormat: Int? {
-        rawValue[kCGImagePropertyPixelFormat] as? Int
-    }
+    public let pixelFormat: Int?
     
     /// The number of pixels along the y-axis of the image.
-    public var pixelHeight: Int? {
-        rawValue[kCGImagePropertyPixelHeight] as? Int
-    }
+    public let pixelHeight: Int?
     
     /// The number of pixels along the x-axis of the image.
-    public var pixelWidth: Int? {
-        rawValue[kCGImagePropertyPixelWidth] as? Int
-    }
+    public let pixelWidth: Int?
     
     /// Metadata for an image that uses Exchangeable Image File Format (EXIF).
-    public var exif: EXIF? {
-        guard let exifDictionary = rawValue[kCGImagePropertyExifDictionary] as? NSDictionary else { return nil }
-        return EXIF(rawValue: exifDictionary)
-    }
+    public let exif: EXIF?
     
     /// Metadata for an image that uses International Press Telecommunications Council (IPTC) metadata.
-    public var iptc: IPTC? {
-        guard let iptcDictionary = rawValue[kCGImagePropertyIPTCDictionary] as? NSDictionary else { return nil }
-        return IPTC(rawValue: iptcDictionary)
-    }
+    public let iptc: IPTC?
     
     /// Metadata for the Tagged Image File Format (TIFF).
-    public var tiff: TIFF? {
-        guard let tiffDictionary = rawValue[kCGImagePropertyTIFFDictionary] as? NSDictionary else { return nil }
-        return TIFF(rawValue: tiffDictionary)
-    }
+    public let tiff: TIFF?
     
     /// Metadata for an image that has Global Positioning System (GPS) information.
-    public var gps: GPS? {
-        guard let gpsDictionary = rawValue[kCGImagePropertyGPSDictionary] as? NSDictionary else { return nil }
-        return GPS(rawValue: gpsDictionary)
-    }
+    public let gps: GPS?
     
     public private(set) var imageFile: ImageFile?
     
-    // MARK: - RawRepresentable
-    
-    public typealias RawValue = NSDictionary
-    
-    public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
+
+    public init(rawValue: NSDictionary, options: MetadataOptions = .all) {
+        self.options = options
+        
+        self.bitDepth = rawValue[kCGImagePropertyDepth] as? Int
+        self.bytes = rawValue[kCGImagePropertyFileSize] as? Int
+        
+        if let bytes = self.bytes {
+            self.bytesMeasurement = Measurement(value: Double(bytes), unit: .bytes)
+            self.memorySize = bytes.formatted(
+                .byteCount(
+                    style: .memory,
+                    spellsOutZero: true,
+                    includesActualByteCount: true
+                )
+            )
+        } else {
+            self.bytesMeasurement = nil
+            self.memorySize = nil
+        }
+        
+        self.colorModel = rawValue[kCGImagePropertyColorModel] as? String
+        self.colorProfile = rawValue[kCGImagePropertyProfileName] as? String
+        
+        self.dpiHeight = rawValue[kCGImagePropertyDPIHeight] as? Int
+        self.dpiWidth = rawValue[kCGImagePropertyDPIWidth] as? Int
+        
+        self.hasAlpha = rawValue[kCGImagePropertyHasAlpha] as? Bool ?? false
+        self.isFloat = rawValue[kCGImagePropertyIsFloat] as? Bool ?? false
+        self.isIndexed = rawValue[kCGImagePropertyIsIndexed] as? Bool ?? false
+        
+        if let value = rawValue[kCGImagePropertyOrientation] as? UInt32 {
+            self.orientation = ImageOrientation(rawValue: value)
+        } else {
+            self.orientation = nil
+        }
+        
+        self.pixelFormat = rawValue[kCGImagePropertyPixelFormat] as? Int
+        self.pixelHeight = rawValue[kCGImagePropertyPixelHeight] as? Int
+        self.pixelWidth = rawValue[kCGImagePropertyPixelWidth] as? Int
+                
+        if options.contains(.exif), let exifDictionary = rawValue[kCGImagePropertyExifDictionary] as? NSDictionary {
+            self.exif = EXIF(rawValue: exifDictionary)
+        } else {
+            self.exif = nil
+        }
+        
+        if options.contains(.iptc), let iptcDictionary = rawValue[kCGImagePropertyIPTCDictionary] as? NSDictionary {
+            self.iptc = IPTC(rawValue: iptcDictionary)
+        } else {
+            self.iptc = nil
+        }
+        
+        if options.contains(.tiff), let tiffDictionary = rawValue[kCGImagePropertyTIFFDictionary] as? NSDictionary {
+            self.tiff = TIFF(rawValue: tiffDictionary)
+        } else {
+            self.tiff = nil
+        }
+        
+        if options.contains(.gps), let gpsDictionary = rawValue[kCGImagePropertyGPSDictionary] as? NSDictionary {
+            self.gps = GPS(rawValue: gpsDictionary)
+        } else {
+            self.gps = nil
+        }
+        
+        // Defaults that may be updated in other initializers
+        self.contentType = nil
+        self.imageFile = nil
     }
-    
-    public let rawValue: NSDictionary
 }
 
 extension ImageMetadata {
@@ -161,75 +169,26 @@ extension ImageMetadata {
         guard let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as NSDictionary? else {
             throw MetadataError.invalidImageProperties
         }
-        self = .init(rawValue: properties)
-        self.options = options
+        self = .init(rawValue: properties, options: options)
         
         if let contentType = CGImageSourceGetType(imageSource) as? String {
             self.contentType = UTType(contentType)
         }
     }
-}
-
-extension ImageMetadata: Encodable {
-    enum CodingKeys: String, CodingKey {
-        case bitDepth
-        case bytes
-        case colorModel
-        case colorProfile
-        case contentType
-        case dpiHeight
-        case dpiWidth
-        case hasAlpha
-        case isFloat
-        case isIndexed
-        case memorySize
-        case orientation
-        case pixelFormat
-        case pixelHeight
-        case pixelWidth
-        
-        case exif
-        case iptc
-        case tiff
-        case gps
-        case imageFile
-    }
     
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(bitDepth, forKey: .bitDepth)
-        try container.encodeIfPresent(bytes, forKey: .bytes)
-        try container.encodeIfPresent(colorModel, forKey: .colorModel)
-        try container.encodeIfPresent(colorProfile, forKey: .colorProfile)
-        try container.encodeIfPresent(contentType?.identifier, forKey: .contentType)
-        try container.encodeIfPresent(dpiHeight, forKey: .dpiHeight)
-        try container.encodeIfPresent(dpiWidth, forKey: .dpiHeight)
-        try container.encode(hasAlpha, forKey: .hasAlpha)
-        try container.encode(isFloat, forKey: .isFloat)
-        try container.encode(isIndexed, forKey: .isIndexed)
-        try container.encodeIfPresent(memorySize, forKey: .memorySize)
-        try container.encodeIfPresent(orientation?.description, forKey: .orientation)
-        try container.encodeIfPresent(pixelFormat, forKey: .pixelFormat)
-        try container.encodeIfPresent(pixelHeight, forKey: .pixelHeight)
-        try container.encodeIfPresent(pixelWidth, forKey: .pixelWidth)
-        
-        if options.contains(.exif) {
-            try container.encodeIfPresent(exif, forKey: .exif)
+    public static func getProperties(url: URL) throws(MetadataError) -> [String: Any] {
+        guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else {
+            throw MetadataError.invalidImageSource
         }
         
-        if options.contains(.iptc) {
-            try container.encodeIfPresent(iptc, forKey: .iptc)
+        guard let dict = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as NSDictionary? else {
+            throw MetadataError.invalidImageProperties
         }
         
-        if options.contains(.tiff) {
-            try container.encodeIfPresent(tiff, forKey: .tiff)
+        guard let properties = dict as? [String: Any] else {
+            throw MetadataError.invalidImageProperties
         }
         
-        if options.contains(.gps) {
-            try container.encodeIfPresent(gps, forKey: .gps)
-        }
-        
-        try container.encodeIfPresent(imageFile, forKey: .imageFile)
+        return properties
     }
 }
-

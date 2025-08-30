@@ -3,7 +3,7 @@ import ImageIO
 
 extension EXIF {
     /// The kind of light source.
-    public enum LightSource: Int, Codable {
+    public enum LightSource: Int, Sendable, Codable {
         /// Unknown
         case unknown = 0
         /// Daylight

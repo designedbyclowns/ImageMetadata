@@ -4,7 +4,7 @@ import ImageIO
 extension EXIF {
     /// Indicates the saturation processing applied by the camera
     /// when the image was shot.
-    public enum Saturation: Int, Codable {
+    public enum Saturation: Int, Sendable, Codable {
         /// Normal
         case normal = 0
         /// Low saturation

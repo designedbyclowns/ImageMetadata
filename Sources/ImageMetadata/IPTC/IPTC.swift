@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 import ImageIO
 
 /// Metadata defined by the International Press Telecommunications Council (IPTC) data.
@@ -6,9 +6,9 @@ import ImageIO
 /// IPTC constants are metadata elements of the Information Interchange Model (IIM) used to provide information about images.
 /// The IIM was developed by the Newspaper Association of America (NAA) and the [IPTC](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#metadata-properties).
 public struct IPTC: Metadata {
-        
+
     // MARK: - Image Categorization
-    
+
     /// The urgency level.
     ///
     /// As this metadata element pertains to distribution management, it was not adopted.
@@ -16,19 +16,15 @@ public struct IPTC: Metadata {
     /// the IPTC Core.
     ///
     /// [9.1. _Deprecated_ IIM metadata rawValue](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#deprecated-iim-metadata-rawValue)
-    public var urgency: String? {
-        rawValue[kCGImagePropertyIPTCUrgency] as? String
-    }
-    
+    public let urgency: String?
+
     /// The subject reference.
     ///
     /// Specifies one or more Subjects from the IPTC Subject-NewsCodes taxonomy to categorize the image. Each Subject is represented as a string of 8 digits in an unordered list.
     ///
     /// [7.23. Subject Code (legacy)](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#subject-code-legacy)
-    public var subjectReference: String? {
-        rawValue[kCGImagePropertyIPTCSubjectReference] as? String
-    }
-    
+    public let subjectReference: String?
+
     /// The category.
     ///
     /// As this metadata element was earmarked as deprecated already for IIM 4.1,
@@ -37,110 +33,73 @@ public struct IPTC: Metadata {
     ///  outside the IPTC Core.
     ///
     /// [9.1. _Deprecated_ IIM metadata rawValue](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#deprecated-iim-metadata-rawValue)
-    public var category: String? {
-        rawValue[kCGImagePropertyIPTCCategory] as? String
-    }
-    
+    public let category: String?
+
     /// A supplemental category.
-    public var supplementalCategory: String? {
-        rawValue[kCGImagePropertyIPTCSupplementalCategory] as? String
-    }
-    
+    public let supplementalCategory: String?
+
     /// A fixture identifier.
-    public var fixtureIdentifier: String? {
-        rawValue[kCGImagePropertyIPTCFixtureIdentifier] as? String
-    }
-    
+    public let fixtureIdentifier: String?
+
     /// Keywords relevant to the image.
     ///
     /// [7.18. Keywords](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#keywords)
-    public var keywords: [String]? {
-        guard let keywords = rawValue[kCGImagePropertyIPTCKeywords] as? [String] else { return nil }
-        return keywords.filter({ $0.isEmpty == false}).isEmpty ? nil : keywords
-    }
-    
+    public let keywords: [String]?
+
     /// The content location code.
-    public var contentLocationCode: String? {
-        rawValue[kCGImagePropertyIPTCContentLocationCode] as? String
-    }
-    
+    public let contentLocationCode: String?
+
     /// The content location name.
-    public var contentLocationName: String? {
-        rawValue[kCGImagePropertyIPTCContentLocationName] as? String
-    }
-    
+    public let contentLocationName: String?
+
     /// The edit status.
-    public var editStatus: String? {
-        rawValue[kCGImagePropertyIPTCEditStatus] as? String
-    }
-    
+    public let editStatus: String?
+
     /// An editorial update.
-    public var editorialUpdate: String? {
-        rawValue[kCGImagePropertyIPTCEditorialUpdate] as? String
-    }
-    
-    public var objectCycle: String? {
-        rawValue[kCGImagePropertyIPTCObjectCycle] as? String
-    }
-    
+    public let editorialUpdate: String?
+
+    public let objectCycle: String?
+
     // MARK: - Image Information
-    
+
     /// The image type.
-    public var imageType: String? {
-        rawValue[kCGImagePropertyIPTCImageType] as? String
-    }
-    
+    public let imageType: String?
+
     /// The image orientation (portrait, landscape, or square).
-    public var imageOrientation: String? {
-        rawValue[kCGImagePropertyIPTCImageOrientation] as? String
-    }
-    
+    public let imageOrientation: String?
+
     /// The language identifier.
     ///
     /// A two-letter code defined by [ISO 639:1988](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes).
-    public var languageIdentifier: String? {
-        rawValue[kCGImagePropertyIPTCLanguageIdentifier] as? String
-    }
-    
+    public let languageIdentifier: String?
+
     /// The description of the image.
     ///
     /// [7.11. Description](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#description)
-    public var captionAbstract: String? {
-        rawValue[kCGImagePropertyIPTCCaptionAbstract] as? String
-    }
-    
+    public let captionAbstract: String?
+
     /// A summary of the contents of the image.
     ///
     /// A brief synopsis of the caption. Headline is not the same as Title.
     ///
     /// [7.14. Headline](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#headline)
-    public var headline: String? {
-        rawValue[kCGImagePropertyIPTCHeadline] as? String
-    }
-    
+    public let headline: String?
+
     /// The name of the service that provided the image.
     ///
     /// The credit to person(s) and/or organization(s) required by the supplier of the image to be used when published.
     ///
     /// [7.9. Credit Line](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#credit-line)
-    public var creditLine: String? {
-        rawValue[kCGImagePropertyIPTCCredit] as? String
-    }
-    
+    public let creditLine: String?
+
     /// The star rating.
-    public var starRating: String? {
-        rawValue[kCGImagePropertyIPTCStarRating] as? String
-    }
-    
+    public let starRating: String?
+
     /// The scene codes for the image; a scene code is a six-digit string.
-    public var sceneCodes: [IPTC.NewsCode.Scene]? {
-        guard let values = rawValue[kCGImagePropertyIPTCScene] as? [String] else { return nil }
-        let sceneCodes = values.compactMap { IPTC.NewsCode.Scene(rawValue: $0) }
-        return sceneCodes.isEmpty ? nil : sceneCodes
-    }
-    
+    public let sceneCodes: [IPTC.NewsCode.Scene]?
+
     // MARK: - Copyright
-    
+
     /// The copyright notice.
     ///
     /// Contains any necessary copyright notice for claiming the intellectual
@@ -151,228 +110,243 @@ public struct IPTC: Metadata {
     ///  Notes on usage rights should be provided in ``rightsUsageTerms``.
     ///
     ///  [7.3. Copyright Notice](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#copyright-notice)
-    public var copyrightNotice: String? {
-        rawValue[kCGImagePropertyIPTCCopyrightNotice] as? String
-    }
-    
+    public let copyrightNotice: String?
+
     /// The usage rights for the image.
     ///
     /// [7.20. Rights Usage Terms](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#rights-usage-terms)
-    public var rightsUsageTerms: String? {
-        rawValue[kCGImagePropertyIPTCRightsUsageTerms] as? String
-    }
-    
+    public let rightsUsageTerms: String?
+
     // MARK: - Release Information
-    
+
     /// The earliest date and time on which you can use the image.
-    public var releaseDate: Date? {
-        guard
-            let dateString = rawValue[kCGImagePropertyIPTCReleaseDate] as? String,
-            let timeString = rawValue[kCGImagePropertyIPTCReleaseDate] as? String
-        else {
-            return nil
-        }
-        return Self.releaseDateFormatter.date(from: "\(dateString) \(timeString)")
-    }
-        
+    public let releaseDate: Date?
+
     /// The latest date you can use the image.
-    public var expirationDate: Date? {
-        guard
-            let dateString = rawValue[kCGImagePropertyIPTCExpirationDate] as? String,
-            let timeString = rawValue[kCGImagePropertyIPTCExpirationDate] as? String
-        else {
-            return nil
-        }
-        return Self.releaseDateFormatter.date(from: "\(dateString) \(timeString)")
-    }
-    
+    public let expirationDate: Date?
+
     /// Special instructions about the use of the image.
-    public var specialInstructions: String? {
-        rawValue[kCGImagePropertyIPTCSpecialInstructions] as? String
-    }
-    
+    public let specialInstructions: String?
+
     /// The advised action.
-    public var actionAdvised: String? {
-        rawValue[kCGImagePropertyIPTCActionAdvised] as? String
-    }
-    
+    public let actionAdvised: String?
+
     /// The reference service.
-    public var referenceService: String? {
-        rawValue[kCGImagePropertyIPTCReferenceService] as? String
-    }
-    
+    public let referenceService: String?
+
     /// The reference date.
-    public var referenceDate: String? {
-        rawValue[kCGImagePropertyIPTCReferenceDate] as? String
-    }
+    public let referenceDate: String?
     // FIXME: ^^^ should be a date
-    
+
     /// The reference number.
-    public var referenceNumber: String? {
-        rawValue[kCGImagePropertyIPTCReferenceNumber] as? String
-    }
-    
-    // The date the image was originally created.
-    public var creationDate: Date? {
-        guard
-            let dateString = rawValue[kCGImagePropertyIPTCDateCreated] as? String,
-            let timeString = rawValue[kCGImagePropertyIPTCTimeCreated] as? String
-        else {
-            return nil
-        }
-        return Self.dateFormatter.date(from: "\(dateString) \(timeString)")
-    }
-    
-    // The date the image was digitized.
-    public var digitalCreationDate: Date? {
-        guard
-            let dateString = rawValue[kCGImagePropertyIPTCDigitalCreationDate] as? String,
-            let timeString = rawValue[kCGImagePropertyIPTCDigitalCreationTime] as? String
-        else {
-            return nil
-        }
-        return Self.dateFormatter.date(from: "\(dateString) \(timeString)")
-    }
-    
+    public let referenceNumber: String?
+
+    /// The date the image was originally created.
+    public let creationDate: Date?
+
+    /// The date the image was digitized.
+    public let digitalCreationDate: Date?
+
     // MARK: - Personnel
-    
+
     /// The name of the person who created the image.
-    public var byline: [String]? {
-        rawValue[kCGImagePropertyIPTCByline] as? [String]
-        // FIXME: Is this really an array?
-    }
-    
+    public let byline: [String]?
+    // FIXME: Is this really an array?
+
     /// The title of the person who created the image.
-    public var bylineTitle: String? {
-        rawValue[kCGImagePropertyIPTCBylineTitle] as? String
-    }
-    
+    public let bylineTitle: String?
+
     /// The original owner of the image.
-    public var source: String? {
-        rawValue[kCGImagePropertyIPTCSource] as? String
-    }
-    
+    public let source: String?
+
     /// The contact information for getting details about the image.
-    public var contact: String? {
-        rawValue[kCGImagePropertyIPTCContact] as? String
-    }
-    
+    public let contact: String?
+
     /// The name of the person who wrote or edited the description of the image.
-    public var writerEditor: String? {
-        rawValue[kCGImagePropertyIPTCWriterEditor] as? String
-    }
-    
+    public let writerEditor: String?
+
     /// The creator’s contact info.
-    public var creatorContactInfo: [IPTC.CreatorContactKey: String]? {
-        guard let dict = rawValue[kCGImagePropertyIPTCCreatorContactInfo] as? NSDictionary else { return nil }
-        
-        let info = dict.reduce(into: [IPTC.CreatorContactKey: String]()) { (partialResult, element) in
-            guard
-                let strKey = element.key as? String,
-                let key = IPTC.CreatorContactKey(rawValue: strKey)
-            else {
-                return
-            }
-            
-            partialResult[key] = element.value as? String
-         }
-        
-        return info.isEmpty ? nil : info
-    }
-    
+    public let creatorContactInfo: [IPTC.CreatorContactKey: String]?
+
     // MARK: - Location data
-    
+
     /// The city where the image was created.
     ///
     /// [7.2. City (legacy)](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#city-legacy)
-    public var city: String? {
-        rawValue[kCGImagePropertyIPTCCity] as? String
-    }
-    
+    public let city: String?
+
     /// The location within the city where the image was created.
     ///
     /// [7.24. Sublocation (legacy)](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#sublocation-legacy)
-    public var subLocation: String? {
-        rawValue[kCGImagePropertyIPTCSubLocation] as? String
-    }
-    
+    public let subLocation: String?
+
     /// The province or state.
     ///
     /// Name of the subregion of a country of the location shown in the image.
     ///
     /// [7.19. Province or State (legacy)](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#province-or-state-legacy)
-    public var provinceState: String? {
-        rawValue[kCGImagePropertyIPTCProvinceState] as? String
-    }
-    
+    public let provinceState: String?
+
     /// The primary country code.
     ///
     /// A three-letter code defined by [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1).
     ///
     /// [7.5. Country Code (legacy)](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#country-code-legacy)
-    public var countryCode: String? {
-        rawValue[kCGImagePropertyIPTCCountryPrimaryLocationCode] as? String
-    }
-    
+    public let countryCode: String?
+
     /// The primary country name.
     ///
     /// [7.4. Country (legacy)](https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata#country-legacy)
-    public var country: String? {
-        rawValue[kCGImagePropertyIPTCCountryPrimaryLocationName] as? String
-    }
-    
+    public let country: String?
+
     /// The call letter or number combination associated with the originating point of an image.
-    public var originalTransmissionReference: String? {
-        rawValue[kCGImagePropertyIPTCOriginalTransmissionReference] as? String
-    }
-    
+    public let originalTransmissionReference: String?
+
     // MARK: - Software Program
-    
+
     /// The originating application.
-    public var originatingProgram: String? {
-        rawValue[kCGImagePropertyIPTCOriginatingProgram] as? String
-    }
-    
+    public let originatingProgram: String?
+
     /// The application version.
-    public var programVersion: String? {
-        rawValue[kCGImagePropertyIPTCProgramVersion] as? String
-    }
-    
+    public let programVersion: String?
+
     // MARK: - Object Details
-    
+
     /// The object type.
-    public var objectType: String? {
-        rawValue[kCGImagePropertyIPTCObjectTypeReference] as? String
-    }
-    
+    public let objectType: String?
+
     /// The object attribute.
-    public var objectAttribute: String? {
-        rawValue[kCGImagePropertyIPTCObjectAttributeReference] as? String
-    }
-    
+    public let objectAttribute: String?
+
     /// The object name.
-    public var objectName: String? {
-        rawValue[kCGImagePropertyIPTCObjectName] as? String
-    }
-    
-    // MARK: - RawRepresentable
-    
-    public typealias RawValue = NSDictionary
-    
+    public let objectName: String?
+
     public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
+        // Image Categorization
+        self.urgency = rawValue[kCGImagePropertyIPTCUrgency] as? String
+        self.subjectReference = rawValue[kCGImagePropertyIPTCSubjectReference] as? String
+        self.category = rawValue[kCGImagePropertyIPTCCategory] as? String
+        self.supplementalCategory = rawValue[kCGImagePropertyIPTCSupplementalCategory] as? String
+        self.fixtureIdentifier = rawValue[kCGImagePropertyIPTCFixtureIdentifier] as? String
+        if let kws = rawValue[kCGImagePropertyIPTCKeywords] as? [String] {
+            let nonEmpty = kws.filter { $0.isEmpty == false }
+            self.keywords = nonEmpty.isEmpty ? nil : kws
+        } else {
+            self.keywords = nil
+        }
+        self.contentLocationCode = rawValue[kCGImagePropertyIPTCContentLocationCode] as? String
+        self.contentLocationName = rawValue[kCGImagePropertyIPTCContentLocationName] as? String
+        self.editStatus = rawValue[kCGImagePropertyIPTCEditStatus] as? String
+        self.editorialUpdate = rawValue[kCGImagePropertyIPTCEditorialUpdate] as? String
+        self.objectCycle = rawValue[kCGImagePropertyIPTCObjectCycle] as? String
+
+        // Image Information
+        self.imageType = rawValue[kCGImagePropertyIPTCImageType] as? String
+        self.imageOrientation = rawValue[kCGImagePropertyIPTCImageOrientation] as? String
+        self.languageIdentifier = rawValue[kCGImagePropertyIPTCLanguageIdentifier] as? String
+        self.captionAbstract = rawValue[kCGImagePropertyIPTCCaptionAbstract] as? String
+        self.headline = rawValue[kCGImagePropertyIPTCHeadline] as? String
+        self.creditLine = rawValue[kCGImagePropertyIPTCCredit] as? String
+        self.starRating = rawValue[kCGImagePropertyIPTCStarRating] as? String
+        if let values = rawValue[kCGImagePropertyIPTCScene] as? [String] {
+            let scenes = values.compactMap { IPTC.NewsCode.Scene(rawValue: $0) }
+            self.sceneCodes = scenes.isEmpty ? nil : scenes
+        } else {
+            self.sceneCodes = nil
+        }
+
+        // Copyright
+        self.copyrightNotice = rawValue[kCGImagePropertyIPTCCopyrightNotice] as? String
+        self.rightsUsageTerms = rawValue[kCGImagePropertyIPTCRightsUsageTerms] as? String
+
+        // Release Information
+        if
+            let dateString = rawValue[kCGImagePropertyIPTCReleaseDate] as? String,
+            let timeString = rawValue[kCGImagePropertyIPTCReleaseDate] as? String
+        {
+            self.releaseDate = Self.releaseDateFormatter.date(from: "\(dateString) \(timeString)")
+        } else {
+            self.releaseDate = nil
+        }
+        if
+            let dateString = rawValue[kCGImagePropertyIPTCExpirationDate] as? String,
+            let timeString = rawValue[kCGImagePropertyIPTCExpirationDate] as? String
+        {
+            self.expirationDate = Self.releaseDateFormatter.date(from: "\(dateString) \(timeString)")
+        } else {
+            self.expirationDate = nil
+        }
+        self.specialInstructions = rawValue[kCGImagePropertyIPTCSpecialInstructions] as? String
+        self.actionAdvised = rawValue[kCGImagePropertyIPTCActionAdvised] as? String
+        self.referenceService = rawValue[kCGImagePropertyIPTCReferenceService] as? String
+        self.referenceDate = rawValue[kCGImagePropertyIPTCReferenceDate] as? String
+        self.referenceNumber = rawValue[kCGImagePropertyIPTCReferenceNumber] as? String
+
+        // Creation Dates
+        if
+            let dateString = rawValue[kCGImagePropertyIPTCDateCreated] as? String,
+            let timeString = rawValue[kCGImagePropertyIPTCTimeCreated] as? String
+        {
+            self.creationDate = Self.dateFormatter.date(from: "\(dateString) \(timeString)")
+        } else {
+            self.creationDate = nil
+        }
+        if
+            let dateString = rawValue[kCGImagePropertyIPTCDigitalCreationDate] as? String,
+            let timeString = rawValue[kCGImagePropertyIPTCDigitalCreationTime] as? String
+        {
+            self.digitalCreationDate = Self.dateFormatter.date(from: "\(dateString) \(timeString)")
+        } else {
+            self.digitalCreationDate = nil
+        }
+
+        // Personnel
+        self.byline = rawValue[kCGImagePropertyIPTCByline] as? [String]
+        self.bylineTitle = rawValue[kCGImagePropertyIPTCBylineTitle] as? String
+        self.source = rawValue[kCGImagePropertyIPTCSource] as? String
+        self.contact = rawValue[kCGImagePropertyIPTCContact] as? String
+        self.writerEditor = rawValue[kCGImagePropertyIPTCWriterEditor] as? String
+        if let dict = rawValue[kCGImagePropertyIPTCCreatorContactInfo] as? NSDictionary {
+            let info = dict.reduce(into: [IPTC.CreatorContactKey: String]()) { partialResult, element in
+                guard
+                    let strKey = element.key as? String,
+                    let key = IPTC.CreatorContactKey(rawValue: strKey)
+                else {
+                    return
+                }
+                partialResult[key] = element.value as? String
+            }
+            self.creatorContactInfo = info.isEmpty ? nil : info
+        } else {
+            self.creatorContactInfo = nil
+        }
+
+        // Location data
+        self.city = rawValue[kCGImagePropertyIPTCCity] as? String
+        self.subLocation = rawValue[kCGImagePropertyIPTCSubLocation] as? String
+        self.provinceState = rawValue[kCGImagePropertyIPTCProvinceState] as? String
+        self.countryCode = rawValue[kCGImagePropertyIPTCCountryPrimaryLocationCode] as? String
+        self.country = rawValue[kCGImagePropertyIPTCCountryPrimaryLocationName] as? String
+        self.originalTransmissionReference = rawValue[kCGImagePropertyIPTCOriginalTransmissionReference] as? String
+
+        // Software Program
+        self.originatingProgram = rawValue[kCGImagePropertyIPTCOriginatingProgram] as? String
+        self.programVersion = rawValue[kCGImagePropertyIPTCProgramVersion] as? String
+
+        // Object Details
+        self.objectType = rawValue[kCGImagePropertyIPTCObjectTypeReference] as? String
+        self.objectAttribute = rawValue[kCGImagePropertyIPTCObjectAttributeReference] as? String
+        self.objectName = rawValue[kCGImagePropertyIPTCObjectName] as? String
     }
-    
-    public let rawValue: NSDictionary
-    
+
     // MARK: - Formatters
-    
+
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd HHmmss"
         return formatter
     }()
-    
+
     static let releaseDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "CCYYMMDD HHMMSS"
@@ -380,105 +354,3 @@ public struct IPTC: Metadata {
     }()
 }
 
-extension IPTC: Encodable {
-    enum CodingKeys: String, CodingKey {
-        case actionAdvised
-        case byline
-        case bylineTitle
-        case captionAbstract
-        case category
-        case city
-        case contact
-        case contentLocationCode
-        case contentLocationName
-        case copyrightNotice
-        case country
-        case countryCode
-        case creationDate
-        case creatorContactInfo
-        case creditLine
-        case digitalCreationDate
-        case editorialUpdate
-        case editStatus
-        case expirationDate
-        case fixtureIdentifier
-        case headline
-        case imageOrientation
-        case imageType
-        case keywords
-        case languageIdentifier
-        case objectAttribute
-        case objectCycle
-        case objectName
-        case objectType
-        case originalTransmissionReference
-        case originatingProgram
-        case programVersion
-        case provinceState
-        case referenceDate
-        case referenceNumber
-        case referenceService
-        case releaseDate
-        case rightsUsageTerms
-        case sceneCodes
-        case source
-        case specialInstructions
-        case starRating
-        case subjectReference
-        case subLocation
-        case supplementalCategory
-        case urgency
-        case writerEditor
-    }
-    
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(actionAdvised, forKey: .actionAdvised)
-        try container.encodeIfPresent(byline, forKey: .byline)
-        try container.encodeIfPresent(bylineTitle, forKey: .bylineTitle)
-        try container.encodeIfPresent(captionAbstract, forKey: .captionAbstract)
-        try container.encodeIfPresent(category, forKey: .category)
-        try container.encodeIfPresent(city, forKey: .city)
-        try container.encodeIfPresent(contact, forKey: .contact)
-        try container.encodeIfPresent(contentLocationCode, forKey: .contentLocationCode)
-        try container.encodeIfPresent(contentLocationName, forKey: .contentLocationName)
-        try container.encodeIfPresent(copyrightNotice, forKey: .copyrightNotice)
-        try container.encodeIfPresent(country, forKey: .country)
-        try container.encodeIfPresent(countryCode, forKey: .countryCode)
-        try container.encodeIfPresent(creationDate, forKey: .creationDate)
-        try container.encodeIfPresent(creatorContactInfo, forKey: .creatorContactInfo)
-        try container.encodeIfPresent(creditLine, forKey: .creditLine)
-        try container.encodeIfPresent(digitalCreationDate, forKey: .digitalCreationDate)
-        try container.encodeIfPresent(editorialUpdate, forKey: .editorialUpdate)
-        try container.encodeIfPresent(editStatus, forKey: .editStatus)
-        try container.encodeIfPresent(expirationDate, forKey: .expirationDate)
-        try container.encodeIfPresent(fixtureIdentifier, forKey: .fixtureIdentifier)
-        try container.encodeIfPresent(headline, forKey: .headline)
-        try container.encodeIfPresent(imageOrientation, forKey: .imageOrientation)
-        try container.encodeIfPresent(imageType, forKey: .imageType)
-        try container.encodeIfPresent(keywords, forKey: .keywords)
-        try container.encodeIfPresent(languageIdentifier, forKey: .languageIdentifier)
-        try container.encodeIfPresent(objectAttribute, forKey: .objectAttribute)
-        try container.encodeIfPresent(objectCycle, forKey: .objectCycle)
-        try container.encodeIfPresent(objectName, forKey: .objectName)
-        try container.encodeIfPresent(objectType, forKey: .objectType)
-        try container.encodeIfPresent(originalTransmissionReference, forKey: .originalTransmissionReference)
-        try container.encodeIfPresent(originatingProgram, forKey: .originatingProgram)
-        try container.encodeIfPresent(programVersion, forKey: .programVersion)
-        try container.encodeIfPresent(provinceState, forKey: .provinceState)
-        try container.encodeIfPresent(referenceDate, forKey: .referenceDate)
-        try container.encodeIfPresent(referenceNumber, forKey: .referenceNumber)
-        try container.encodeIfPresent(referenceService, forKey: .referenceService)
-        try container.encodeIfPresent(releaseDate, forKey: .releaseDate)
-        try container.encodeIfPresent(rightsUsageTerms, forKey: .rightsUsageTerms)
-        try container.encodeIfPresent(sceneCodes, forKey: .sceneCodes)
-        try container.encodeIfPresent(source, forKey: .source)
-        try container.encodeIfPresent(specialInstructions, forKey: .specialInstructions)
-        try container.encodeIfPresent(starRating, forKey: .starRating)
-        try container.encodeIfPresent(subjectReference, forKey: .subjectReference)
-        try container.encodeIfPresent(subLocation, forKey: .subLocation)
-        try container.encodeIfPresent(supplementalCategory, forKey: .supplementalCategory)
-        try container.encodeIfPresent(urgency, forKey: .urgency)
-        try container.encodeIfPresent(writerEditor, forKey: .writerEditor)
-    }
-}

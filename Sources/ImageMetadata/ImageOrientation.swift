@@ -1,4 +1,4 @@
-import ImageIO
+public import ImageIO
 
 public enum ImageOrientation: UInt32, Sendable, Codable {
     /// The encoded image data matches the image’s intended display orientation.

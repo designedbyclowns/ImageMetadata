@@ -3,7 +3,7 @@ import ImageIO
 
 extension EXIF {
     /// Indicates the distance to the subject.
-    public enum SubjectDistanceRange: Int, Codable {
+    public enum SubjectDistanceRange: Int, Sendable, Codable {
         /// Unknown
         case unknown = 0
         /// Macro

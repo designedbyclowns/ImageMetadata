@@ -4,7 +4,7 @@ A swift library for reading metadata from images.
 
 ## Overview
 
-This library uses Apple's [ImageIO](https://developer.apple.com/documentation/imageio) framework to read metadata directly from an image and expose those properties in type safe swift models.
+This library uses Apple's [ImageIO framework](https://developer.apple.com/documentation/imageio) to read metadata directly from an image and expose those properties in type safe swift models.
 
 > ImageMetadata is limited to the image formats, and metadata tags, supported by ImageIO.
 
@@ -36,5 +36,3 @@ See <doc:Usage>.
 
 - ``MetadataError``
 - ``ImageFileError``
-
-

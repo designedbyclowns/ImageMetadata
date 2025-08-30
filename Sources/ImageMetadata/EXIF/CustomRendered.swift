@@ -5,7 +5,7 @@ extension EXIF {
     /// Indicates the use of special processing on image data, such as rendering geared to output.
     ///
     /// When ``custom`` processing is performed, the reader is expected to disable or minimize any further processing.
-    public enum CustomRendered: Int, Codable{
+    public enum CustomRendered: Int, Codable, Sendable {
         /// Normal process
         case normal = 0
         /// Custom process

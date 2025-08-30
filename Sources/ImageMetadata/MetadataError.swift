@@ -1,11 +1,11 @@
-import Foundation
+public import Foundation
+import ImageIO
 
-public enum MetadataError: Error {
+public enum MetadataError: Error, Sendable {
     case invalidImageProperties
     case invalidImageSource
     case keyNotFound(String)
 }
-
 
 extension MetadataError: LocalizedError {
     public var errorDescription: String? {

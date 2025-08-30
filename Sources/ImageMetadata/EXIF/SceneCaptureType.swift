@@ -8,7 +8,7 @@ extension EXIF {
     /// image was shot.
     ///
     /// > This differs from the ``sceneType`` property.
-    public enum SceneCaptureType: Int, Codable {
+    public enum SceneCaptureType: Int, Sendable, Codable {
         /// Standard
         case standard = 0
         /// Landscape
@@ -24,13 +24,13 @@ extension EXIF.SceneCaptureType: CustomStringConvertible {
     public var description: String {
         switch self {
         case .standard:
-            String(localized: "Standard")
+            String(localized: "standard")
         case .landscape:
-            String(localized: "Landscape")
+            String(localized: "landscape")
         case .portrait:
-            String(localized: "Portrait")
+            String(localized: "portrait")
         case .nightScene:
-            String(localized: "Night scene")
+            String(localized: "night-scene")
         }
     }
 }

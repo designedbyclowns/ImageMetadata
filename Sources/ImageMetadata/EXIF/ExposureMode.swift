@@ -3,7 +3,7 @@ import ImageIO
 
 extension EXIF {
     /// The exposure mode set when the image was shot.
-    public enum ExposureMode: Int, Codable {
+    public enum ExposureMode: Int, Sendable, Codable {
         /// Auto exposure
         case auto = 0
         /// Manual exposure
