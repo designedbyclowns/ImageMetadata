@@ -1,0 +1,45 @@
+{
+  "configurations" : [
+    {
+      "id" : "3A5DDAE5-792C-4265-A65E-BBFFAF6E7FCA",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "ImageMetadata",
+          "name" : "ImageMetadata"
+        }
+      ]
+    },
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "imgmd",
+      "name" : "imgmd"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ImageMetadataTests",
+        "name" : "ImageMetadataTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "imgmdTests",
+        "name" : "imgmdTests"
+      }
+    }
+  ],
+  "version" : 1
+}

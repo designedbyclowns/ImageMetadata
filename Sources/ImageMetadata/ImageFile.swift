@@ -1,9 +1,9 @@
-import Foundation
+public import Foundation
 import ImageIO
-import UniformTypeIdentifiers
+public import UniformTypeIdentifiers.UTType
 
 /// Metadata properties of an image file.
-public struct ImageFile: Metadata {
+public struct ImageFile: Metadata, Sendable {
     
     /// Creates a new image file from a file path.
     /// - Parameter path: The path to the image file.
@@ -13,11 +13,11 @@ public struct ImageFile: Metadata {
     
     /// Creates a new image file from a file URL.
     /// - Parameter url: The file URL of the image file.
-    public init(url: URL) throws(ImageFileError) {
+    public init(url: URL, options: MetadataOptions = .all) throws(ImageFileError) {
         guard url.isFileURL else {
             throw ImageFileError(url, code: .invalidURL)
         }
-        self.rawValue = url
+        self.url = url
         
         defer {
             // ¡Muy importante! - release access to the URL
@@ -48,9 +48,7 @@ public struct ImageFile: Metadata {
     }
     
     /// The file sURL.
-    public var url: URL {
-        rawValue
-    }
+    public let url: URL
     
     /// The total file size, in bytes.
     public let fileSize: Int?
@@ -82,39 +80,4 @@ public struct ImageFile: Metadata {
 
     /// The [UTType](https://developer.apple.com/documentation/uniformtypeidentifiers/uttype-swift.struct) of the image file.
     public private(set) var utType: UTType?
-    
-    // MARK: - RawRepresentable
-    
-    public typealias RawValue = URL
-    
-    public init?(rawValue: URL) {
-        do {
-            self = try ImageFile.init(url: rawValue)
-        } catch {
-            return nil
-        }
-    }
-    
-    public let rawValue: URL
-}
-
-extension ImageFile: Encodable {
-    enum CodingKeys: String, CodingKey {
-        case basename
-        case contentType
-        case filename
-        case fileSize
-        case path
-        case url
-    }
-    
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(basename, forKey: .basename)
-        try container.encodeIfPresent(contentType, forKey: .contentType)
-        try container.encode(filename, forKey: .filename)
-        try container.encodeIfPresent(formattedFileSize, forKey: .fileSize)
-        try container.encodeIfPresent(url.absoluteString, forKey: .url)
-        try container.encode(path, forKey: .path)
-    }
 }

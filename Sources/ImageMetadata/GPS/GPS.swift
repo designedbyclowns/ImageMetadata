@@ -1,69 +1,68 @@
-import Foundation
+public import Foundation
 import ImageIO
 
 /// Metadata for an image that has Global Positioning System (GPS) information.
 public struct GPS: Metadata {
-    
     /// The altitude.
-    public var altitude: Double? {
-        rawValue[kCGImagePropertyGPSAltitude] as? Double
-    }
-    
+    public let altitude: Double?
+
     // The altitude point of reference.
-    public var altitudeReference: String? {
-        rawValue[kCGImagePropertyGPSAltitudeRef] as? String
-    }
+    public let altitudeReference: String?
     
     /// The latitude.
-    public var latitude: Double? {
-        rawValue[kCGImagePropertyGPSLatitude] as? Double
-    }
+    ///
+    /// This value should be interpreted using the `latitudeReference` instead of its sign.
+    public let latitude: Double?
     
     /// An indication of whether the latitude is north or south.
-    public var latitudeReference: String? {
-        rawValue[kCGImagePropertyGPSLatitudeRef] as? String
-    }
+    public let latitudeReference: LatitudeReference?
     
     /// The longitude.
-    public var longitude: Double? {
-        rawValue[kCGImagePropertyGPSLongitude] as? Double
-    }
+    ///
+    /// This value should be interpreted using the `longitudeReference` instead of its sign.
+    public let longitude: Double?
     
     /// An indication of whether the longitude is east or west.
-    public var longitudeReference: String? {
-        rawValue[kCGImagePropertyGPSLongitudeRef] as? String
-    }
+    public let longitudeReference: LongitudeReference?
     
     /// The horizontal error in the GPS position.
-    public var horizontalPositioningError: Double? {
-        rawValue[kCGImagePropertyGPSHPositioningError] as? Double
-    }
+    public let horizontalPositioningError: Double?
     
     /// The date relative to Coordinated Universal Time (UTC).
-    public var dateStamp: String? {
-        rawValue[kCGImagePropertyGPSDateStamp] as? String
-    }
-    
+    public let dateStamp: String?
+
     /// The time in UTC (Coordinated Universal Time).
-    public var timeStamp: String? {
-        rawValue[kCGImagePropertyGPSTimeStamp] as? String
-    }
+    public let timeStamp: String?
     
     /// The date when the location was recorded.
     public var date: Date? {
         guard let dateStamp, let timeStamp else { return nil }
         return Self.dateFormatter.date(from: "\(dateStamp) \(timeStamp)")
     }
-    
-    // MARK: - RawRepresentable
-    
-    public typealias RawValue = NSDictionary
-    
+        
     public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
+        self.altitude = rawValue[kCGImagePropertyGPSAltitude] as? Double
+        self.altitudeReference = rawValue[kCGImagePropertyGPSAltitudeRef] as? String
+        
+        self.latitude = rawValue[kCGImagePropertyGPSLatitude] as? Double
+        self.longitude = rawValue[kCGImagePropertyGPSLongitude] as? Double
+        
+        if let value = rawValue[kCGImagePropertyGPSLatitudeRef] as? String {
+            self.latitudeReference = LatitudeReference(rawValue: value)
+        } else {
+            self.latitudeReference = nil
+        }
+        
+        if let value = rawValue[kCGImagePropertyGPSLongitudeRef] as? String {
+            self.longitudeReference = LongitudeReference(rawValue: value)
+        } else {
+            self.longitudeReference = nil
+        }
+        
+        self.horizontalPositioningError = rawValue[kCGImagePropertyGPSHPositioningError] as? Double
+        self.dateStamp = rawValue[kCGImagePropertyGPSDateStamp] as? String
+        self.timeStamp = rawValue[kCGImagePropertyGPSTimeStamp] as? String
     }
-    
-    public let rawValue: NSDictionary
     
     // MARK: - Formatters
     
@@ -75,27 +74,33 @@ public struct GPS: Metadata {
     }()
 }
 
-extension GPS: Encodable {
-    enum CodingKeys: String, CodingKey {
-        case altitude
-        case altitudeReference
-        case latitude
-        case latitudeReference
-        case longitude
-        case longitudeReference
-        case horizontalPositioningError
-        case dateTime
+extension GPS {
+    public enum LatitudeReference: String, CustomStringConvertible, Sendable {
+        case north = "N"
+        case south = "S"
+        
+        var sign: FloatingPointSign {
+            switch self {
+            case .north: return .plus
+            case .south: return .minus
+            }
+        }
+        
+        public var description: String { rawValue }
     }
     
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(altitude, forKey: .altitude)
-        try container.encodeIfPresent(altitudeReference, forKey: .altitudeReference)
-        try container.encodeIfPresent(latitude, forKey: .latitude)
-        try container.encodeIfPresent(latitudeReference, forKey: .latitudeReference)
-        try container.encodeIfPresent(longitude, forKey: .longitude)
-        try container.encodeIfPresent(longitudeReference, forKey: .longitudeReference)
-        try container.encodeIfPresent(horizontalPositioningError, forKey: .horizontalPositioningError)
-        try container.encodeIfPresent(date, forKey: .dateTime)
+    public enum LongitudeReference: String, CustomStringConvertible, Sendable  {
+        case east = "E"
+        case west = "W"
+        
+        var sign: FloatingPointSign {
+            switch self {
+            case .east: return .minus
+            case .west: return .plus
+            }
+        }
+        
+        public var description: String { rawValue }
     }
 }
+

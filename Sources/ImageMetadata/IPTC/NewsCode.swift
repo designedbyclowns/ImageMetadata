@@ -5,7 +5,7 @@ extension IPTC {
         /// Indicates a type of scene covered by an item.
         ///
         /// [Human readable concept data](https://cv.iptc.org/newscodes/scene).
-        public enum Scene: String, Codable {
+        public enum Scene: String, Sendable, Codable {
             case headshot = "010100"
             case halfLength = "010200"
             case fullLength = "010300"

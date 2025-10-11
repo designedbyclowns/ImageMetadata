@@ -20,7 +20,7 @@ let package = Package(
     name: "Foo",
     // name, platforms, products, etc.
     dependencies: [
-        .package(url: "https://github.com/designedbyclowns/ImageMetadata",  .upToNextMinor(from: "0.1.0")),
+        .package(url: "https://github.com/designedbyclowns/ImageMetadata", .upToNextMinor(from: "0.1.0")),
     ],
     targets: [
         .target(name: "Foo", dependencies: [
@@ -66,9 +66,10 @@ cp .build/release/imgmd /usr/local/bin/imgmd
 
 ```sh
 imgmd --help
-OVERVIEW: Extract image metadata.
+OVERVIEW: Outputs metadata from the supplied image files as JSON.
 
-Outputs metadata from the supplied image files as JSON.
+All metadata is output by default. Use the options to limit what metadata is
+displayed.
 
 USAGE: imgmd [--basic] [--exif] [--no-exif] [--gps] [--no-gps] [--iptc] [--no-iptc] [--tiff] [--no-tiff] [--debug] [<files> ...]
 
@@ -83,6 +84,8 @@ OPTIONS:
   -t, --tiff/--no-tiff    Include TIFF metadata. (default: --tiff)
   -d, --debug             Show the raw metadata.
   -h, --help              Show help information.
+
+Program ended with exit code: 0
 ```sh
 
 Example:
@@ -101,7 +104,7 @@ Results
   "contentType" : "public.jpeg",
   "dpiHeight" : 540,
   "exif" : {
-    "colorSpace" : 1,
+    "colorSpace" : "sRGB",
     "componentsConfiguration" : [
       1,
       2,
@@ -116,12 +119,14 @@ Results
     "offsetTimeOriginal" : "+02:00",
     "pixelXDimension" : 4530,
     "pixelYDimension" : 3810,
-    "sceneCaptureType" : "Standard",
+    "sceneCaptureType" : "standard",
     "subsecTime" : "002",
     "subsecTimeDigitized" : "002",
     "subsecTimeOriginal" : "002",
     "version" : "2.2.1"
   },
+  "fileSize" : "2.1 MB (2,240,988 bytes)",
+  "filename" : "WindowAtLeGras.jpg",
   "gps" : {
     "dateTime" : "2025-02-13T15:02:45Z",
     "horizontalPositioningError" : 1,
@@ -131,13 +136,6 @@ Results
     "longitudeReference" : "E"
   },
   "hasAlpha" : false,
-  "imageFile" : {
-    "basename" : "WindowAtLeGras",
-    "contentType" : "public.jpeg",
-    "fileSize" : "2.1 MB (2,240,988 bytes)",
-    "filename" : "WindowAtLeGras.jpg",
-    "path" : "Resources/WindowAtLeGras.jpg"
-  },
   "iptc" : {
     "byline" : [
       "Joseph Nicéphore Niépce"

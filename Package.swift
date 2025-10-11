@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 
 import PackageDescription
 
@@ -16,23 +16,12 @@ let package = Package(
         .executable(name: "imgmd", targets: ["imgmd"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMinor(from: "1.4.0")),
-        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMajor(from: "1.6.0")),
+        .package(url: "https://github.com/apple/swift-numerics", .upToNextMajor(from: "1.0.0"))
     ],
     targets: [
         .target(
             name: "ImageMetadata",
-            resources: [
-                .process("Resources")
-            ]
-        ),
-        .testTarget(
-            name: "ImageMetadataTests",
-            dependencies: [
-                "ImageMetadata",
-                .product(name: "Numerics", package: "swift-numerics"),
-            ],
             resources: [
                 .process("Resources")
             ]
@@ -44,6 +33,39 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
-        .testTarget( name: "imgmdTests", dependencies: ["imgmd"]),
+        .target(
+            name: "Shared",
+            resources: [
+                .process("Resources")
+            ]
+        ),
+        .testTarget(
+            name: "ImageMetadataTests",
+            dependencies: [
+                "ImageMetadata",
+                "Shared",
+                .product(name: "Numerics", package: "swift-numerics"),
+            ],
+        ),
+        
+        .testTarget(
+            name: "imgmdTests",
+            dependencies: [
+                "imgmd",
+                "Shared"
+            ],
+            resources: [
+                .process("Resources")
+            ],
+        ),
+        
     ]
 )
+
+for target in package.targets {
+    var settings = target.swiftSettings ?? []
+    settings.append(contentsOf: [
+        .enableUpcomingFeature("InternalImportsByDefault")
+    ])
+    target.swiftSettings = settings
+}

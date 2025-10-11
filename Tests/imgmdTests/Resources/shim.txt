@@ -1,0 +1,1 @@
+This is here so we can resolve the path to the executable from the bundle.

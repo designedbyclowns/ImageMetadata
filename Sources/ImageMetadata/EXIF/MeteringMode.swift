@@ -3,7 +3,7 @@ import ImageIO
 
 extension EXIF {
     /// The metering mode.
-    public enum MeteringMode: Int, Codable {
+    public enum MeteringMode: Int, Sendable, Codable {
         /// Unknown
         case unknown = 0
         /// Average

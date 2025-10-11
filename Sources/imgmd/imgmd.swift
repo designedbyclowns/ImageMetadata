@@ -2,11 +2,11 @@ import Foundation
 import ArgumentParser
 import ImageMetadata
 
-enum MetadataType: String, EnumerableFlag {
+fileprivate enum MetadataType: String, EnumerableFlag {
     case exif, iptc, tiff, gps
 }
 
-extension MetadataType {
+fileprivate extension MetadataType {
     var metadataOption: MetadataOptions {
         switch self {
         case .exif:
@@ -21,16 +21,14 @@ extension MetadataType {
     }
 }
 
-/// Extract image metadata.
-///
-/// See 'imgmd --help' for more information.
+
 @main
 struct imgmd: ParsableCommand {
     
     static let configuration = CommandConfiguration(
-        abstract: "Extract image metadata.",
+        abstract: "Outputs metadata from the supplied image files as JSON.",
         discussion: """
-        Outputs metadata from the supplied image files as JSON.
+        All metadata is output by default. Use the options to limit what metadata is displayed.
         """
     )
     
@@ -38,16 +36,16 @@ struct imgmd: ParsableCommand {
     var basic: Bool = false
     
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include EXIF metadata.")
-    var exif: Bool = true
+    var exif: Bool = false
     
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include GPS metadata.")
-    var gps: Bool = true
+    var gps: Bool = false
     
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include IPTC metadata.")
-    var iptc: Bool = true
+    var iptc: Bool = false
     
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include TIFF metadata.")
-    var tiff: Bool = true
+    var tiff: Bool = false
     
     @Flag(name: .shortAndLong, help: "Show the raw metadata.")
     var debug: Bool = false
@@ -66,27 +64,32 @@ struct imgmd: ParsableCommand {
             throw ValidationError("Please specify at least one image file.")
         }
         
-        var metadataOptions = MetadataOptions()
-        if basic {
-            metadataOptions = MetadataOptions.none
-        } else {
-            if exif { metadataOptions.insert(.exif) }
-            if iptc { metadataOptions.insert(.iptc) }
-            if tiff { metadataOptions.insert(.tiff) }
-            if gps { metadataOptions.insert(.gps) }
-        }
-                    
-        let imagesMetadata = try files.map {
-            return try ImageMetadata(url: $0, options: metadataOptions)
-        }
-        
-        guard !imagesMetadata.isEmpty else { return }
-        
         guard debug == false else {
-            let rawValues = imagesMetadata.map { $0.rawValue as AnyObject }
+            let rawValues = files.compactMap {
+                try? ImageMetadata.getProperties(url: $0) as AnyObject
+            }
             print(rawValues)
             return
         }
+        
+        var metadataOptions = MetadataOptions()
+        
+        if exif { metadataOptions.insert(.exif) }
+        if iptc { metadataOptions.insert(.iptc) }
+        if tiff { metadataOptions.insert(.tiff) }
+        if gps { metadataOptions.insert(.gps) }
+        
+        if basic {
+            metadataOptions = MetadataOptions.none
+        } else if metadataOptions.isEmpty {
+            metadataOptions = MetadataOptions.all
+        }
+        
+        let imagesMetadata = try files.map {
+            try ImageMetadata(url: $0, options: metadataOptions)
+        }
+        
+        guard !imagesMetadata.isEmpty else { return }
         
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]

@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Metadata: RawRepresentable & Encodable & CustomStringConvertible & CustomDebugStringConvertible {}
+public protocol Metadata: Encodable & CustomStringConvertible & Sendable {}
 
 extension Metadata {
     
@@ -13,11 +13,5 @@ extension Metadata {
         
         guard let json = try? encoder.encode(self) else { return "" }
         return String(decoding: json, as: UTF8.self)
-    }
-    
-    // MARK: CustomDebugStringConvertible
-    
-    public var debugDescription: String {
-        String(describing: rawValue)
     }
 }

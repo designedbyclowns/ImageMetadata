@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import Numerics
+@testable import Shared
 @testable import ImageMetadata
 
 struct EXIFTests {
@@ -8,7 +9,7 @@ struct EXIFTests {
     let exif: EXIF
     
     init() throws {
-        let url = try #require(Bundle.module.url(forResource: "exif", withExtension: "jpg"))
+        let url = try #require(Shared.url(forResource: "exif", withExtension: "jpg"))
         let imageFile = try ImageFile(url: url)
         let image = try ImageMetadata(imageFile: imageFile)
         self.exif = try #require(image.exif)
@@ -37,7 +38,7 @@ struct EXIFTests {
     }
     
     @Test func colorSpace() {
-        #expect(exif.colorSpace == 65535)
+        #expect(exif.colorSpace == .uncalibrated)
     }
     
     @Test func componentsConfiguration() {
@@ -45,7 +46,7 @@ struct EXIFTests {
     }
     
     @Test func compositeImage() {
-        #expect(exif.compositeImage == 2)
+        #expect(exif.compositeImage == .general)
     }
     
     @Test func compressedBitsPerPixel() {
@@ -60,14 +61,14 @@ struct EXIFTests {
         #expect(exif.customRendered == nil)
     }
        
-    @Test func dateTimeOriginal() throws {
-        let date = try #require(exif.dateTimeOriginal)
+    @Test func dateTimeDigitized() throws {
+        let date = try #require(exif.dateTimeDigitized)
         let dateString = EXIF.dateFormatter.string(from: date)
         #expect(dateString == "2024:04:19 08:11:15")
     }
     
-    @Test func dateTimeDigitized() throws {
-        let date = try #require(exif.dateTimeDigitized)
+    @Test func dateTimeOriginal() throws {
+        let date = try #require(exif.dateTimeOriginal)
         let dateString = EXIF.dateFormatter.string(from: date)
         #expect(dateString == "2024:04:19 08:11:15")
     }

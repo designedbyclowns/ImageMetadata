@@ -1,11 +1,12 @@
-import Foundation
+public import Foundation
 
-public struct ImageFileError: Error {
+public struct ImageFileError: Error, @unchecked Sendable {
     public enum Code: Int, Sendable {
         case accessDenied
         case invalidContentType
         case invalidURL
         case noSuchFile
+        case invalidMetadata
         case unknown
     }
     
@@ -24,7 +25,7 @@ public struct ImageFileError: Error {
 }
 
 extension ImageFileError: Equatable {
-    public static func == (lhs: ImageFileError, rhs: ImageFileError) -> Bool {
+    public nonisolated static func == (lhs: ImageFileError, rhs: ImageFileError) -> Bool {
         guard lhs.code != .unknown || rhs.code != .unknown else {
             return false
         }
@@ -37,16 +38,27 @@ extension ImageFileError: LocalizedError {
         switch code {
         case .accessDenied:
             return String(localized: "Cannot access \(url.absoluteString)")
+            
         case .invalidURL:
             return String(localized: "\(url.absoluteString) is not a file URL.")
+            
         case .invalidContentType:
             return String(localized: "Invalid content type.")
+            
         case .noSuchFile:
             if let underlyingError {
                 return underlyingError.localizedDescription
             } else {
                 return String(localized: "The file '\(url.absoluteString)' couldn’t be opened because it doesn’t exist.")
             }
+            
+        case .invalidMetadata:
+            if let underlyingError {
+                return underlyingError.localizedDescription
+            } else {
+                return String(localized: "Failed to parse metadata for '\(url.absoluteString)'.")
+            }
+            
         case .unknown:
             if let underlyingError {
                 return underlyingError.localizedDescription
@@ -83,3 +95,4 @@ extension ImageFileError: CustomNSError {
         return info
     }
 }
+

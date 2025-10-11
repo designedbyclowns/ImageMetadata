@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "C6F4CDF1-A872-4CA3-9801-DA7A3FBA08C1",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "ImageMetadata",
+          "name" : "ImageMetadata"
+        }
+      ]
+    },
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ImageMetadataTests",
+        "name" : "ImageMetadataTests"
+      }
+    }
+  ],
+  "version" : 1
+}

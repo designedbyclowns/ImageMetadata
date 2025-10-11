@@ -4,7 +4,7 @@ import ImageIO
 extension EXIF {
     /// The class of the program used by the camera to
     /// set exposure when the picture is taken.
-    public enum ExposureProgram: Int, Codable {
+    public enum ExposureProgram: Int, Sendable, Codable {
         /// Not defined
         case notDefined = 0
         /// Manual

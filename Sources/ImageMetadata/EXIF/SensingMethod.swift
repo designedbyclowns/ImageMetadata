@@ -3,7 +3,7 @@ import ImageIO
 
 extension EXIF {
     /// Indicates the image sensor type on the camera or input device.
-    public enum SensingMethod: Int, Codable {
+    public enum SensingMethod: Int, Sendable, Codable {
         /// Not defined
         case notDefined = 1
         /// One-chip color area sensor

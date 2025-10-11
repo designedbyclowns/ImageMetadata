@@ -1,229 +1,141 @@
-import Foundation
+public import Foundation
 import ImageIO
 
 /// Metadata defined by the [Exif Exchangeable Image File Format](https://www.loc.gov/preservation/digital/formats/fdd/fdd000146.shtml).
 public struct EXIF: Metadata {
-
     /// The aperture value.
-    public var apertureValue: Double? {
-        rawValue[kCGImagePropertyExifApertureValue] as? Double
-    }
+    public let apertureValue: Double?
     
     /// A string with the serial number of the camera.
-    public var bodySerialNumber: String? {
-        rawValue[kCGImagePropertyExifBodySerialNumber] as? String
-    }
+    public let bodySerialNumber: String?
     
     /// The brightness value.
-    public var brightnessValue: Double? {
-        rawValue[kCGImagePropertyExifBrightnessValue] as? Double
-     }
+    public let brightnessValue: Double?
     
     /// A string with the name of the camera’s owner.
-    public var cameraOwnerName: String? {
-        rawValue[kCGImagePropertyExifCameraOwnerName] as? String
-    }
+    public let cameraOwnerName: String?
     
     /// The color filter array (CFA) pattern, which is the geometric pattern of
     /// the image sensor for a 1-chip color sensor area.
-    public var cfaPattern: Int? {
-        rawValue[kCGImagePropertyExifCFAPattern] as? Int
-    }
+    public let cfaPattern: Int?
     
     /// The color space.
-    public var colorSpace: Int? {
-        rawValue[kCGImagePropertyExifColorSpace] as? Int
-    }
+    public let colorSpace: ColorSpace?
     
     /// The components configuration for compressed data.
     ///
     /// For compressed data, specifies that the channels of each component
     /// are arranged in increasing numeric order (from first component to the fourth).
-    public var componentsConfiguration: [Int]? {
-        rawValue[kCGImagePropertyExifComponentsConfiguration] as? [Int]
-    }
-    // FIXME: Undefined
+    public let componentsConfiguration: [Int]?
     
     /// Indicates whether the recorded image is a composite image or not.
-    public var compositeImage: Int? {
-        rawValue[kCGImagePropertyExifCompositeImage] as? Int
-    }
+    public let compositeImage: CompositeImage?
     
     /// The bits per pixel of the compression mode.
-    public var compressedBitsPerPixel: Double? {
-        rawValue[kCGImagePropertyExifCompressedBitsPerPixel] as? Double
-    }
+    public let compressedBitsPerPixel: Double?
     
     /// The contrast setting.
-    public var contrast: EXIF.Contrast? {
-        guard let value = rawValue[kCGImagePropertyExifContrast] as? Int else { return nil }
-        return EXIF.Contrast(rawValue: value)
-    }
+    public let contrast: EXIF.Contrast?
     
     /// Special rendering performed on the image data.
     ///
     /// When special processing is performed, the reader is expected
     /// to disable or minimize any further processing.
-    public var customRendered: EXIF.CustomRendered? {
-        guard let value = rawValue[kCGImagePropertyExifCustomRendered] as? Int else { return nil }
-        return EXIF.CustomRendered(rawValue: value)
-    }
+    public let customRendered: EXIF.CustomRendered?
     
     /// The date the image was stored as digital data.
-    public var dateTimeDigitized: Date? {
-        guard let dateString = rawValue[kCGImagePropertyExifDateTimeDigitized] as? String else { return nil }
-        return Self.dateFormatter.date(from: dateString)
-    }
+    public let dateTimeDigitized: Date?
     
     /// The date the original image data was generated.
     ///
     /// For a digital still camera the date and time the picture was taken are recorded.
-    public var dateTimeOriginal: Date? {
-        guard let dateString = rawValue[kCGImagePropertyExifDateTimeOriginal] as? String else { return nil }
-        return Self.dateFormatter.date(from: dateString)
-    }
+    public let dateTimeOriginal: Date?
     
     /// For a particular camera mode, indicates the conditions for taking the picture.
-    public var deviceSettingDescription: String? {
-        rawValue[kCGImagePropertyExifDeviceSettingDescription] as? String
-    }
+    public let deviceSettingDescription: String?
     
     /// The digital zoom ratio.
-    public var digitalZoomRatio: Double? {
-        rawValue[kCGImagePropertyExifDigitalZoomRatio] as? Double
-    }
+    public let digitalZoomRatio: Double?
     
     /// The exposure bias value.
-    public var exposureBiasValue: Double? {
-        rawValue[kCGImagePropertyExifExposureBiasValue] as? Double
-    }
+    public let exposureBiasValue: Double?
     
     /// The selected exposure index.
-    public var exposureIndex: Double? {
-        rawValue[kCGImagePropertyExifExposureIndex] as? Double
-    }
+    public let exposureIndex: Double?
     
     /// The ``EXIF/ExposureMode`` mode setting.
     ///
     ///  In auto-bracketing mode, the camera shoots a series of frames of the same scene at different exposure settings.
-    public var exposureMode: EXIF.ExposureMode? {
-        guard let value = rawValue[kCGImagePropertyExifExposureMode] as? Int else { return nil }
-        return EXIF.ExposureMode(rawValue: value)
-    }
+    public let exposureMode: EXIF.ExposureMode?
     
     /// The ``EXIF/ExposureProgram``.
     ///
     /// The program used by the camera to set exposure when the picture is taken.
-    public var exposureProgram: EXIF.ExposureProgram? {
-        guard let value = rawValue[kCGImagePropertyExifExposureProgram] as? Int else { return nil }
-        return EXIF.ExposureProgram(rawValue: value)
-    }
+    public let exposureProgram: EXIF.ExposureProgram?
     
     /// The exposure time, in seconds.
-    public var exposureTime: Double? {
-        rawValue[kCGImagePropertyExifExposureTime] as? Double
-    }
-    
+    public let exposureTime: Double?
     
     /// The image source.
     ///
     /// If a DSC recorded the image, this tag value of this tag always
     /// be set to 3, indicating that the image was recorded on a DSC.
-    public var fileSource: Int? {
-        rawValue[kCGImagePropertyExifFileSource] as? Int
-    }
+    public let fileSource: Int?
     
     /// The strobe energy when the image was captured, in beam candle power seconds.
-    public var flashEnergy: Double? {
-        rawValue[kCGImagePropertyExifFlashEnergy] as? Double
-    }
+    public let flashEnergy: Double?
     
     /// The flash status when the image was shot.
-    public var flash: Int? {
-        rawValue[kCGImagePropertyExifFlash] as? Int
-    }    // FIXME: Needs to be parsed from return values into a specific type.
+    public let flash: Int?
     
-       
     /// The Flashpix format version supported by a FPXR file.
-    public var flashPixVersion: String? {
-        guard let components = rawValue[kCGImagePropertyExifFlashPixVersion] as? [CustomStringConvertible] else { return nil }
-        return components
-            .map { String(describing: $0) }
-            .joined(separator: ".")
-    }
+    public let flashPixVersion: String?
     
     /// The F-number.
-    public var fNumber: Double? {
-        rawValue[kCGImagePropertyExifFNumber] as? Double
-    }
+    public let fNumber: Double?
     
     /// The focal length.
-    public var focalLength: Double? {
-        rawValue[kCGImagePropertyExifFocalLength] as? Double
-    }
+    public let focalLength: Double?
+    
     /// The equivalent focal length in 35 mm film.
     ///
     /// A value of 0 means the focal length is unknown.
     ///
     /// > Note: This tag differs from the ``focalLength`` property.
-    public var focalLenIn35mmFilm: Int? {
-        rawValue[kCGImagePropertyExifFocalLenIn35mmFilm] as? Int
-    }
+    public let focalLenIn35mmFilm: Int?
     
     /// The unit of measurement for the focal plane x and y resolutions.
-    public var focalPlaneResolutionUnit: Int? {
-        rawValue[kCGImagePropertyExifFocalPlaneResolutionUnit] as? Int
-    }
+    public let focalPlaneResolutionUnit: Int?
     
     /// The number of image-width pixels (x-axis) per focal plane resolution unit.
-    public var focalPlaneXResolution: Double? {
-        rawValue[kCGImagePropertyExifFocalPlaneXResolution] as? Double
-    }
+    public let focalPlaneXResolution: Double?
     
     /// The number of image-height pixels (y-axis) per focal plane resolution unit.
-    public var focalPlaneYResolution: Double? {
-        rawValue[kCGImagePropertyExifFocalPlaneYResolution] as? Double
-    }
+    public let focalPlaneYResolution: Double?
     
     /// The gain adjustment setting.
-    public var gainControl: Int? {
-        rawValue[kCGImagePropertyExifGainControl] as? Int
-    }
+    public let gainControl: Int?
     
     /// The gamma setting.
-    public var gamma: Double? {
-        rawValue[kCGImagePropertyExifGamma] as? Double
-    }
+    public let gamma: Double?
     
     /// The unique ID of the image.
-    public var imageUniqueID: String? {
-        rawValue[kCGImagePropertyExifImageUniqueID] as? String
-    }
+    public let imageUniqueID: String?
     
     /// The ISO speed setting used to capture the image.
-    public var isoSpeed: Int? {
-        rawValue[kCGImagePropertyExifISOSpeed] as? Int
-    }
+    public let isoSpeed: Int?
     
     /// The ISO speed latitude yyy value.
-    public var isoSpeedLatitudeYYY: Int? {
-        rawValue[kCGImagePropertyExifISOSpeedLatitudeyyy] as? Int
-    }
+    public let isoSpeedLatitudeYYY: Int?
     
     /// The ISO speed latitude zzz value.
-    public var isoSpeedLatitudeZZZ: Int? {
-        rawValue[kCGImagePropertyExifISOSpeedLatitudezzz] as? Int
-    }
+    public let isoSpeedLatitudeZZZ: Int?
     
     /// The ISO speed ratings.
-    public var isoSpeedRatings: [Int]? {
-        rawValue[kCGImagePropertyExifISOSpeedRatings] as? [Int]
-    }
+    public let isoSpeedRatings: [Int]?
     
     /// A string with the name of the lens manufacturer.
-    public var lensMake: String? {
-        rawValue[kCGImagePropertyExifLensMake] as? String
-    }
+    public let lensMake: String?
     
     /// The specification information for the camera lens.
     ///
@@ -232,226 +144,351 @@ public struct EXIF: Metadata {
     ///  which are specification information for the lens that was used in photography.
     ///
     ///  When the minimum F number is unknown, the notation is 0/0.
-    public var lensSpecification: String? {
-        rawValue[kCGImagePropertyExifLensSpecification] as? String
-    }
+    public let lensSpecification: String?
     
     /// The kind of light source.
-    public var lightSource: EXIF.LightSource? {
-        guard let value = rawValue[kCGImagePropertyExifLightSource] as? Int else { return nil }
-        return EXIF.LightSource(rawValue: value)
-    }
+    public let lightSource: EXIF.LightSource?
     
     /// Information specified by the camera manufacturer.
     ///
     /// A tag for manufacturers of Exif writers to record any desired information.
     /// The contents are up to the manufacturer, but this tag should not be used
     /// for any other than its intended purpose.
-    public var makerNote: String? {
-        rawValue[kCGImagePropertyExifMakerNote] as? String
-    }
+    public let makerNote: String?
     
     /// The maximum aperture value.
-    public var maxApertureValue: Double? {
-        rawValue[kCGImagePropertyExifMaxApertureValue] as? Double
-    }
+    public let maxApertureValue: Double?
     
     /// The ``EXIF/MeteringMode``.
-    public var meteringMode: EXIF.MeteringMode? {
-        guard let value = rawValue[kCGImagePropertyExifMeteringMode] as? Int else { return nil }
-        return EXIF.MeteringMode(rawValue: value)
-    }
+    public let meteringMode: EXIF.MeteringMode?
     
     /// The opto-electric conversion function (OECF) that defines the relationship
     ///  between the optical input of the camera and the resulting image.
     ///
     ///  Specified in ISO 14524.
-    public var oecf: String? {
-        rawValue[kCGImagePropertyExifOECF] as? String
-    }
-    // FIXME: Undefined ^^^
+    public let oecf: String?
     
     /// Time difference from Universal Time Coordinated (UTC) including
     /// daylight saving time of `DateTime` tag.
-    public var offsetTime: String? {
-        rawValue[kCGImagePropertyExifOffsetTime] as? String
-    }
+    public let offsetTime: String?
     
     /// Time difference from Universal Time Coordinated (UTC) including
     /// daylight saving time of ``dateTimeDigitized`` tag.
-    public var offsetTimeDigitized: String? {
-        rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
-    }
+    public let offsetTimeDigitized: String?
     
     /// Time difference from Universal Time Coordinated (UTC) including
     /// daylight saving time of ``dateTimeOriginal`` tag.
-    public var offsetTimeOriginal: String? {
-        rawValue[kCGImagePropertyExifOffsetTimeOriginal] as? String
-    }
+    public let offsetTimeOriginal: String?
     
     /// The x dimension of a pixel.
-    public var pixelXDimension: Int? {
-        rawValue[kCGImagePropertyExifPixelXDimension] as? Int
-    }
+    public let pixelXDimension: Int?
     
     /// The y dimension of a pixel.
-    public var pixelYDimension: Int? {
-        rawValue[kCGImagePropertyExifPixelYDimension] as? Int
-    }
+    public let pixelYDimension: Int?
     
     /// The recommended exposure index.
-    public var recommendedExposureIndex: Int? {
-        rawValue[kCGImagePropertyExifRecommendedExposureIndex] as? Int
-     }
+    public let recommendedExposureIndex: Int?
     
     /// A sound file related to the image.
-    public var relatedSoundFile: String? {
-        rawValue[kCGImagePropertyExifRelatedSoundFile] as? String
-     }
-    
+    public let relatedSoundFile: String?
     
     /// The ``EXIF/Saturation`` setting.
-    public var saturation: EXIF.Saturation? {
-        guard let value = rawValue[kCGImagePropertyExifSaturation] as? Int else { return nil }
-        return EXIF.Saturation(rawValue: value)
-    }
+    public let saturation: EXIF.Saturation?
     
     /// The ``EXIF/SceneCaptureType``; for example, standard, landscape, portrait, or night.
-    public var sceneCaptureType: EXIF.SceneCaptureType? {
-        guard let value = rawValue[kCGImagePropertyExifSceneCaptureType] as? Int else { return nil }
-        return EXIF.SceneCaptureType(rawValue: value)
-    }
+    public let sceneCaptureType: EXIF.SceneCaptureType?
     
     /// The scene type.
     ///
     ///  If a DSC recorded the image, this tag value shall always be
     ///   set to 1, indicating that the image was directly photographed.
-    public var sceneType: Int? {
-        rawValue[kCGImagePropertyExifSceneType] as? Int
-    }
+    public let sceneType: Int?
     
     /// The ``EXIF/SensingMethod`` of the camera or input device.
-    public var sensingMethod: EXIF.SensingMethod? {
-        guard let value = rawValue[kCGImagePropertyExifSensingMethod] as? Int else { return nil }
-        return EXIF.SensingMethod(rawValue: value)
-    }
+    public let sensingMethod: EXIF.SensingMethod?
     
     /// The type of sensitivity data stored for the image.
-    public var sensitivityType: Double? {
-        rawValue[kCGImagePropertyExifSensitivityType] as? Double
-    }
+    public let sensitivityType: Double?
     
-   
     /// The ``EXIF/Sharpness`` setting.
-    public var sharpness: EXIF.Sharpness? {
-        guard let value = rawValue[kCGImagePropertyExifSharpness] as? Int else { return nil }
-        return EXIF.Sharpness(rawValue: value)
-    }
+    public let sharpness: EXIF.Sharpness?
     
     /// The shutter speed value.
-    public var shutterSpeedValue: Double? {
-        rawValue[kCGImagePropertyExifShutterSpeedValue] as? Double
-     }
+    public let shutterSpeedValue: Double?
     
     /// The exposure times for composite images.
-    public var sourceExposureTimesOfCompositeImage: String? {
-        rawValue[kCGImagePropertyExifSourceExposureTimesOfCompositeImage] as? String
-     }
+    public let sourceExposureTimesOfCompositeImage: String?
     
     /// The number of images that make up a composite image.
-    public var sourceImageNumberOfCompositeImage: Int? {
-        rawValue[kCGImagePropertyExifSourceImageNumberOfCompositeImage] as? Int
-     }
+    public let sourceImageNumberOfCompositeImage: Int?
     
     /// The spatial frequency table and spatial frequency response values in
     /// the width, height, and diagonal directions.
-    public var spatialFrequencyResponse: String? {
-        rawValue[kCGImagePropertyExifSpatialFrequencyResponse] as? String
-     }
-    // FIXME: This type is undefined
+    public let spatialFrequencyResponse: String?
     
     /// The spectral sensitivity of each channel.
-    public var spectralSensitivity: String? {
-        rawValue[kCGImagePropertyExifSpectralSensitivity] as? String
-    }
+    public let spectralSensitivity: String?
     
     /// The sensitivity data for the image.
-    public var standardOutputSensitivity: Double? {
-        rawValue[kCGImagePropertyExifStandardOutputSensitivity] as? Double
-     }
+    public let standardOutputSensitivity: Double?
     
     /// The subject area.
     ///
     /// The location and area of the main subject in the overall scene.
-    public var subjectArea: [Int]? {
-        rawValue[kCGImagePropertyExifSubjectArea] as? [Int]
-    }
-    // FIXME: This should be converted to a custom type that can represent a point (location), circular area, or rectangular area.
+    public let subjectArea: [Int]?
     
     /// The distance to the subject.
-    public var subjectDistance: Double? {
-        rawValue[kCGImagePropertyExifSubjectDistance] as? Double
-    }
+    public let subjectDistance: Double?
     
     /// The distance to the subject as an ``EXIF/SubjectDistanceRange``.
-    public var subjectDistanceRange: EXIF.SubjectDistanceRange? {
-        guard let value = rawValue[kCGImagePropertyExifSubjectDistRange] as? Int else { return nil }
-        return EXIF.SubjectDistanceRange(rawValue: value)
-    }
+    public let subjectDistanceRange: EXIF.SubjectDistanceRange?
     
     /// The location of the image’s primary subject.
-    public var subjectLocation: Int? {
-        rawValue[kCGImagePropertyExifSubjectLocation] as? Int
-     }
-    // FIXME: Should maybe be an (Init, Int)?
+    public let subjectLocation: Int?
     
     /// The fraction of seconds for the date and time tag.
-    public var subsecTime: String? {
-        rawValue[kCGImagePropertyExifSubsecTime] as? String
-     }
+    public let subsecTime: String?
     
     /// The fraction of seconds for the digitized date and time tag.
-    public var subsecTimeDigitized: String? {
-        rawValue[kCGImagePropertyExifSubsecTimeDigitized] as? String
-     }
+    public let subsecTimeDigitized: String?
     
     /// The fraction of seconds for the original date and time tag.
-    public var subsecTimeOriginal: String? {
-        rawValue[kCGImagePropertyExifSubsecTimeOriginal] as? String
-     }
+    public let subsecTimeOriginal: String?
     
     /// A user comment.
     ///
     /// A tag for EXIF users to write keywords or comments on the image
     /// besides those in `ImageDescription`, and without the character
     /// code limitations of the `ImageDescription` tag.
-    public var userComment: String? {
-        rawValue[kCGImagePropertyExifUserComment] as? String
-     }
+    public let userComment: String?
     
     /// The EXIF version.
-    public var version: String? {
-        guard let components = rawValue[kCGImagePropertyExifVersion] as? [CustomStringConvertible] else { return nil }
-        return components
-            .map { String(describing: $0) }
-            .joined(separator: ".")
-     }
+    public let version: String?
     
     /// The white balance mode.
-    public var whiteBalance: EXIF.WhiteBalance? {
-        guard let value = rawValue[kCGImagePropertyExifWhiteBalance] as? Int else { return nil }
-        return EXIF.WhiteBalance(rawValue: value)
-    }
+    public let whiteBalance: EXIF.WhiteBalance?
     
-    // MARK: - RawRepresentable
+    // MARK: - Auxiliary (ExifAux) Stored Properties
     
-    public typealias RawValue = NSDictionary
+    /// Firmware information.
+    public let firmware: String?
+    
+    /// Flash compensation.
+    public let flashCompensation: String?
+    
+    /// The image number.
+    public let imageNumber: String?
+    
+    /// The lens ID.
+    public let lensID: String?
+    
+    /// Lens information.
+    public let lensInfo: String?
+    
+    /// A string with the lens model information.
+    public let lensModel: String?
+    
+    /// A string with the lens’s serial number.
+    public let lensSerialNumber: String?
+    
+    /// The owner name.
+    public let ownerName: String?
+    
+    /// The serial number.
+    public let serialNumber: String?
     
     public init(rawValue: NSDictionary) {
-        self.rawValue = rawValue
+        
+        
+        self.apertureValue = rawValue[kCGImagePropertyExifApertureValue] as? Double
+        self.bodySerialNumber = rawValue[kCGImagePropertyExifBodySerialNumber] as? String
+        self.brightnessValue = rawValue[kCGImagePropertyExifBrightnessValue] as? Double
+        self.cameraOwnerName = rawValue[kCGImagePropertyExifCameraOwnerName] as? String
+        self.cfaPattern = rawValue[kCGImagePropertyExifCFAPattern] as? Int
+        
+        if let v = rawValue[kCGImagePropertyExifColorSpace] as? Int {
+            self.colorSpace = ColorSpace(rawValue: v)
+        } else {
+            self.colorSpace = nil
+        }
+        
+        self.componentsConfiguration = rawValue[kCGImagePropertyExifComponentsConfiguration] as? [Int]
+        
+        if let v = rawValue[kCGImagePropertyExifCompositeImage] as? Int {
+            self.compositeImage = CompositeImage(rawValue: v)
+        } else {
+            self.compositeImage = nil
+        }
+        
+        self.compressedBitsPerPixel = rawValue[kCGImagePropertyExifCompressedBitsPerPixel] as? Double
+        
+        if let v = rawValue[kCGImagePropertyExifContrast] as? Int {
+            self.contrast = EXIF.Contrast(rawValue: v)
+        } else {
+            self.contrast = nil
+        }
+        
+        if let v = rawValue[kCGImagePropertyExifCustomRendered] as? Int {
+            self.customRendered = EXIF.CustomRendered(rawValue: v)
+        } else {
+            self.customRendered = nil
+        }
+        
+        if let s = rawValue[kCGImagePropertyExifDateTimeDigitized] as? String {
+            self.dateTimeDigitized = EXIF.dateFormatter.date(from: s)
+        } else {
+            self.dateTimeDigitized = nil
+        }
+        
+        if let s = rawValue[kCGImagePropertyExifDateTimeOriginal] as? String {
+            self.dateTimeOriginal = EXIF.dateFormatter.date(from: s)
+        } else {
+            self.dateTimeOriginal = nil
+        }
+        
+        self.deviceSettingDescription = rawValue[kCGImagePropertyExifDeviceSettingDescription] as? String
+        self.digitalZoomRatio = rawValue[kCGImagePropertyExifDigitalZoomRatio] as? Double
+        self.exposureBiasValue = rawValue[kCGImagePropertyExifExposureBiasValue] as? Double
+        self.exposureIndex = rawValue[kCGImagePropertyExifExposureIndex] as? Double
+        
+        if let v = rawValue[kCGImagePropertyExifExposureMode] as? Int {
+            self.exposureMode = EXIF.ExposureMode(rawValue: v)
+        } else {
+            self.exposureMode = nil
+        }
+        
+        if let v = rawValue[kCGImagePropertyExifExposureProgram] as? Int {
+            self.exposureProgram = EXIF.ExposureProgram(rawValue: v)
+        } else {
+            self.exposureProgram = nil
+        }
+        
+        self.exposureTime = rawValue[kCGImagePropertyExifExposureTime] as? Double
+        self.fileSource = rawValue[kCGImagePropertyExifFileSource] as? Int
+        self.flashEnergy = rawValue[kCGImagePropertyExifFlashEnergy] as? Double
+        self.flash = rawValue[kCGImagePropertyExifFlash] as? Int
+        
+        if let components = rawValue[kCGImagePropertyExifFlashPixVersion] as? [CustomStringConvertible] {
+            self.flashPixVersion = components.map { String(describing: $0) }.joined(separator: ".")
+        } else {
+            self.flashPixVersion = nil
+        }
+        
+        self.fNumber = rawValue[kCGImagePropertyExifFNumber] as? Double
+        self.focalLength = rawValue[kCGImagePropertyExifFocalLength] as? Double
+        self.focalLenIn35mmFilm = rawValue[kCGImagePropertyExifFocalLenIn35mmFilm] as? Int
+        self.focalPlaneResolutionUnit = rawValue[kCGImagePropertyExifFocalPlaneResolutionUnit] as? Int
+        self.focalPlaneXResolution = rawValue[kCGImagePropertyExifFocalPlaneXResolution] as? Double
+        self.focalPlaneYResolution = rawValue[kCGImagePropertyExifFocalPlaneYResolution] as? Double
+        self.gainControl = rawValue[kCGImagePropertyExifGainControl] as? Int
+        self.gamma = rawValue[kCGImagePropertyExifGamma] as? Double
+        self.imageUniqueID = rawValue[kCGImagePropertyExifImageUniqueID] as? String
+        self.isoSpeed = rawValue[kCGImagePropertyExifISOSpeed] as? Int
+        self.isoSpeedLatitudeYYY = rawValue[kCGImagePropertyExifISOSpeedLatitudeyyy] as? Int
+        self.isoSpeedLatitudeZZZ = rawValue[kCGImagePropertyExifISOSpeedLatitudezzz] as? Int
+        self.isoSpeedRatings = rawValue[kCGImagePropertyExifISOSpeedRatings] as? [Int]
+        self.lensMake = rawValue[kCGImagePropertyExifLensMake] as? String
+        self.lensSpecification = rawValue[kCGImagePropertyExifLensSpecification] as? String
+        
+        if let v = rawValue[kCGImagePropertyExifLightSource] as? Int {
+            self.lightSource = EXIF.LightSource(rawValue: v)
+        } else {
+            self.lightSource = nil
+        }
+        
+        self.makerNote = rawValue[kCGImagePropertyExifMakerNote] as? String
+        self.maxApertureValue = rawValue[kCGImagePropertyExifMaxApertureValue] as? Double
+        
+        if let v = rawValue[kCGImagePropertyExifMeteringMode] as? Int {
+            self.meteringMode = EXIF.MeteringMode(rawValue: v)
+        } else {
+            self.meteringMode = nil
+        }
+        
+        self.oecf = rawValue[kCGImagePropertyExifOECF] as? String
+        self.offsetTime = rawValue[kCGImagePropertyExifOffsetTime] as? String
+        self.offsetTimeDigitized = rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
+        self.offsetTimeOriginal = rawValue[kCGImagePropertyExifOffsetTimeOriginal] as? String
+        self.pixelXDimension = rawValue[kCGImagePropertyExifPixelXDimension] as? Int
+        self.pixelYDimension = rawValue[kCGImagePropertyExifPixelYDimension] as? Int
+        self.recommendedExposureIndex = rawValue[kCGImagePropertyExifRecommendedExposureIndex] as? Int
+        self.relatedSoundFile = rawValue[kCGImagePropertyExifRelatedSoundFile] as? String
+        
+        if let v = rawValue[kCGImagePropertyExifSaturation] as? Int {
+            self.saturation = EXIF.Saturation(rawValue: v)
+        } else {
+            self.saturation = nil
+        }
+        
+        if let v = rawValue[kCGImagePropertyExifSceneCaptureType] as? Int {
+            self.sceneCaptureType = EXIF.SceneCaptureType(rawValue: v)
+        } else {
+            self.sceneCaptureType = nil
+        }
+        
+        self.sceneType = rawValue[kCGImagePropertyExifSceneType] as? Int
+        
+        if let v = rawValue[kCGImagePropertyExifSensingMethod] as? Int {
+            self.sensingMethod = EXIF.SensingMethod(rawValue: v)
+        } else {
+            self.sensingMethod = nil
+        }
+        
+        self.sensitivityType = rawValue[kCGImagePropertyExifSensitivityType] as? Double
+        
+        if let v = rawValue[kCGImagePropertyExifSharpness] as? Int {
+            self.sharpness = EXIF.Sharpness(rawValue: v)
+        } else {
+            self.sharpness = nil
+        }
+        
+        self.shutterSpeedValue = rawValue[kCGImagePropertyExifShutterSpeedValue] as? Double
+        self.sourceExposureTimesOfCompositeImage = rawValue[kCGImagePropertyExifSourceExposureTimesOfCompositeImage] as? String
+        self.sourceImageNumberOfCompositeImage = rawValue[kCGImagePropertyExifSourceImageNumberOfCompositeImage] as? Int
+        self.spatialFrequencyResponse = rawValue[kCGImagePropertyExifSpatialFrequencyResponse] as? String
+        self.spectralSensitivity = rawValue[kCGImagePropertyExifSpectralSensitivity] as? String
+        self.standardOutputSensitivity = rawValue[kCGImagePropertyExifStandardOutputSensitivity] as? Double
+        self.subjectArea = rawValue[kCGImagePropertyExifSubjectArea] as? [Int]
+        self.subjectDistance = rawValue[kCGImagePropertyExifSubjectDistance] as? Double
+        
+        if let v = rawValue[kCGImagePropertyExifSubjectDistRange] as? Int {
+            self.subjectDistanceRange = EXIF.SubjectDistanceRange(rawValue: v)
+        } else {
+            self.subjectDistanceRange = nil
+        }
+        
+        self.subjectLocation = rawValue[kCGImagePropertyExifSubjectLocation] as? Int
+        self.subsecTime = rawValue[kCGImagePropertyExifSubsecTime] as? String
+        self.subsecTimeDigitized = rawValue[kCGImagePropertyExifSubsecTimeDigitized] as? String
+        self.subsecTimeOriginal = rawValue[kCGImagePropertyExifSubsecTimeOriginal] as? String
+        self.userComment = rawValue[kCGImagePropertyExifUserComment] as? String
+        
+        if let components = rawValue[kCGImagePropertyExifVersion] as? [CustomStringConvertible] {
+            self.version = components.map { String(describing: $0) }.joined(separator: ".")
+        } else {
+            self.version = nil
+        }
+        
+        if let v = rawValue[kCGImagePropertyExifWhiteBalance] as? Int {
+            self.whiteBalance = EXIF.WhiteBalance(rawValue: v)
+        } else {
+            self.whiteBalance = nil
+        }
+        
+        // Auxiliary (ExifAux) fields
+        let aux = rawValue[kCGImagePropertyExifAuxDictionary] as? NSDictionary
+        
+        self.firmware = aux?[kCGImagePropertyExifAuxFirmware] as? String
+        self.flashCompensation = aux?[kCGImagePropertyExifAuxFlashCompensation] as? String
+        self.imageNumber = aux?[kCGImagePropertyExifAuxImageNumber] as? String
+        self.lensID = aux?[kCGImagePropertyExifAuxLensID] as? String
+        self.lensInfo = aux?[kCGImagePropertyExifAuxLensInfo] as? String
+        // Prefer auxiliary lens model/serial; fall back to main Exif keys if not present
+        self.lensModel = (aux?[kCGImagePropertyExifAuxLensModel] as? String) ?? (rawValue[kCGImagePropertyExifLensModel] as? String)
+        self.lensSerialNumber = (aux?[kCGImagePropertyExifAuxLensSerialNumber] as? String) ?? (rawValue[kCGImagePropertyExifLensSerialNumber] as? String)
+        self.ownerName = aux?[kCGImagePropertyExifAuxOwnerName] as? String
+        self.serialNumber = aux?[kCGImagePropertyExifAuxSerialNumber] as? String
     }
-    
-    public let rawValue: NSDictionary
     
     // MARK: - Formatters
     
@@ -460,231 +497,6 @@ public struct EXIF: Metadata {
         formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
         return formatter
     }()
+    
 }
 
-// MARK: - Auxiliary rawValue
-
-extension EXIF {
-    
-    public var auxiliaryProperties: NSDictionary? {
-        rawValue[kCGImagePropertyExifAuxDictionary] as? NSDictionary
-    }
-    /// Firmware information.
-    public var firmware: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxFirmware] as? String
-     }
-    
-    /// Flash compensation.
-    public var flashCompensation: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxFlashCompensation] as? String
-     }
-    
-    /// The image number.
-    public var imageNumber: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxImageNumber] as? String
-     }
-    
-    /// The lens ID.
-    public var lensID: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxLensID] as? String
-     }
-    
-    /// A string with the lens model information.
-    public var lensModel: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxLensModel] as? String ?? rawValue[kCGImagePropertyExifLensModel] as? String
-     }
-    /// A string with the lens’s serial number.
-    public var lensSerialNumber: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxLensSerialNumber] as? String ?? rawValue[kCGImagePropertyExifLensSerialNumber] as? String
-     }
-    
-    /// Lens information.
-    public var lensInfo: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxLensInfo] as? String
-    }
-    
-    /// The owner name.
-    public var ownerName: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxOwnerName] as? String
-     }
-    
-    /// The serial number.
-    public var serialNumber: String? {
-        auxiliaryProperties?[kCGImagePropertyExifAuxSerialNumber] as? String
-     }
-}
-
-extension EXIF: Encodable {
-    
-    enum CodingKeys: String, CodingKey {
-        case apertureValue
-        case bodySerialNumber
-        case brightnessValue
-        case cameraOwnerName
-        case cfaPattern
-        case colorSpace
-        case componentsConfiguration
-        case compositeImage
-        case compressedBitsPerPixel
-        case contrast
-        case customRendered
-        case dateTimeDigitized
-        case dateTimeOriginal
-        case deviceSettingDescription
-        case digitalZoomRatio
-        case exposureBiasValue
-        case exposureIndex
-        case exposureMode
-        case exposureProgram
-        case exposureTime
-        case fileSource
-        case firmware
-        case flash
-        case flashCompensation
-        case flashEnergy
-        case flashPixVersion
-        case fNumber
-        case focalLength
-        case focalLenIn35mmFilm
-        case focalPlaneResolutionUnit
-        case focalPlaneXResolution
-        case focalPlaneYResolution
-        case gainControl
-        case gamma
-        case imageNumber
-        case imageUniqueID
-        case isoSpeed
-        case isoSpeedLatitudeYYY
-        case isoSpeedLatitudeZZZ
-        case isoSpeedRatings
-        case lensID
-        case lensInfo
-        case lensMake
-        case lensModel
-        case lensSerialNumber
-        case lensSpecification
-        case lightSource
-        case makerNote
-        case maxApertureValue
-        case meteringMode
-        case oecf
-        case offsetTime
-        case offsetTimeDigitized
-        case offsetTimeOriginal
-        case ownerName
-        case pixelXDimension
-        case pixelYDimension
-        case recommendedExposureIndex
-        case relatedSoundFile
-        case saturation
-        case sceneCaptureType
-        case sceneType
-        case sensingMethod
-        case sensitivityType
-        case serialNumber
-        case sharpness
-        case shutterSpeedValue
-        case sourceExposureTimesOfCompositeImage
-        case sourceImageNumberOfCompositeImage
-        case spatialFrequencyResponse
-        case spectralSensitivity
-        case standardOutputSensitivity
-        case subjectArea
-        case subjectDistance
-        case subjectDistanceRange
-        case subjectLocation
-        case subsecTime
-        case subsecTimeDigitized
-        case subsecTimeOriginal
-        case userComment
-        case version
-        case whiteBalance
-    }
-    
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encodeIfPresent(apertureValue, forKey: .apertureValue)
-        try container.encodeIfPresent(bodySerialNumber, forKey: .bodySerialNumber)
-        try container.encodeIfPresent(brightnessValue, forKey: .brightnessValue)
-        try container.encodeIfPresent(cameraOwnerName, forKey: .cameraOwnerName)
-        try container.encodeIfPresent(cfaPattern, forKey: .cfaPattern)
-        try container.encodeIfPresent(colorSpace, forKey: .colorSpace)
-        try container.encodeIfPresent(componentsConfiguration, forKey: .componentsConfiguration)
-        try container.encodeIfPresent(compositeImage, forKey: .compositeImage)
-        try container.encodeIfPresent(compressedBitsPerPixel, forKey: .compressedBitsPerPixel)
-        try container.encodeIfPresent(contrast?.description, forKey: .contrast)
-        try container.encodeIfPresent(customRendered?.description, forKey: .customRendered)
-        try container.encodeIfPresent(dateTimeDigitized, forKey: .dateTimeDigitized)
-        try container.encodeIfPresent(dateTimeOriginal, forKey: .dateTimeOriginal)
-        try container.encodeIfPresent(deviceSettingDescription, forKey: .deviceSettingDescription)
-        try container.encodeIfPresent(digitalZoomRatio, forKey: .digitalZoomRatio)
-        try container.encodeIfPresent(exposureBiasValue, forKey: .exposureBiasValue)
-        try container.encodeIfPresent(exposureIndex, forKey: .exposureIndex)
-        try container.encodeIfPresent(exposureMode?.description, forKey: .exposureMode)
-        try container.encodeIfPresent(exposureProgram?.description, forKey: .exposureProgram)
-        try container.encodeIfPresent(exposureTime, forKey: .exposureTime)
-        try container.encodeIfPresent(fileSource, forKey: .fileSource)
-        try container.encodeIfPresent(firmware, forKey: .firmware)
-        try container.encodeIfPresent(flash, forKey: .flash)
-        try container.encodeIfPresent(flashCompensation, forKey: .flashCompensation)
-        try container.encodeIfPresent(flashEnergy, forKey: .flashEnergy)
-        try container.encodeIfPresent(flashPixVersion, forKey: .flashPixVersion)
-        try container.encodeIfPresent(fNumber, forKey: .fNumber)
-        try container.encodeIfPresent(focalLength, forKey: .focalLength)
-        try container.encodeIfPresent(focalLenIn35mmFilm, forKey: .focalLenIn35mmFilm)
-        try container.encodeIfPresent(focalPlaneResolutionUnit, forKey: .focalPlaneResolutionUnit)
-        try container.encodeIfPresent(focalPlaneXResolution, forKey: .focalPlaneXResolution)
-        try container.encodeIfPresent(focalPlaneYResolution, forKey: .focalPlaneYResolution)
-        try container.encodeIfPresent(gainControl, forKey: .gainControl)
-        try container.encodeIfPresent(gamma, forKey: .gamma)
-        try container.encodeIfPresent(imageNumber, forKey: .imageNumber)
-        try container.encodeIfPresent(imageUniqueID, forKey: .imageUniqueID)
-        try container.encodeIfPresent(isoSpeed, forKey: .isoSpeed)
-        try container.encodeIfPresent(isoSpeedLatitudeYYY, forKey: .isoSpeedLatitudeYYY)
-        try container.encodeIfPresent(isoSpeedLatitudeZZZ, forKey: .isoSpeedLatitudeZZZ)
-        try container.encodeIfPresent(isoSpeedRatings, forKey: .isoSpeedRatings)
-        try container.encodeIfPresent(lensID, forKey: .lensID)
-        try container.encodeIfPresent(lensInfo, forKey: .lensInfo)
-        try container.encodeIfPresent(lensMake, forKey: .lensMake)
-        try container.encodeIfPresent(lensModel, forKey: .lensModel)
-        try container.encodeIfPresent(lensSerialNumber, forKey: .lensSerialNumber)
-        try container.encodeIfPresent(lensSpecification, forKey: .lensSpecification)
-        try container.encodeIfPresent(lightSource?.description, forKey: .lightSource)
-        try container.encodeIfPresent(makerNote, forKey: .makerNote)
-        try container.encodeIfPresent(maxApertureValue, forKey: .maxApertureValue)
-        try container.encodeIfPresent(meteringMode?.description, forKey: .meteringMode)
-        try container.encodeIfPresent(oecf, forKey: .oecf)
-        try container.encodeIfPresent(offsetTime, forKey: .offsetTime)
-        try container.encodeIfPresent(offsetTimeDigitized, forKey: .offsetTimeDigitized)
-        try container.encodeIfPresent(offsetTimeOriginal, forKey: .offsetTimeOriginal)
-        try container.encodeIfPresent(ownerName, forKey: .ownerName)
-        try container.encodeIfPresent(pixelXDimension, forKey: .pixelXDimension)
-        try container.encodeIfPresent(pixelYDimension, forKey: .pixelYDimension)
-        try container.encodeIfPresent(recommendedExposureIndex, forKey: .recommendedExposureIndex)
-        try container.encodeIfPresent(relatedSoundFile, forKey: .relatedSoundFile)
-        try container.encodeIfPresent(saturation?.description, forKey: .saturation)
-        try container.encodeIfPresent(sceneCaptureType?.description, forKey: .sceneCaptureType)
-        try container.encodeIfPresent(sceneType, forKey: .sceneType)
-        try container.encodeIfPresent(sensingMethod?.description, forKey: .sensingMethod)
-        try container.encodeIfPresent(sensitivityType, forKey: .sensitivityType)
-        try container.encodeIfPresent(serialNumber, forKey: .serialNumber)
-        try container.encodeIfPresent(sharpness?.description, forKey: .sharpness)
-        try container.encodeIfPresent(shutterSpeedValue, forKey: .shutterSpeedValue)
-        try container.encodeIfPresent(sourceExposureTimesOfCompositeImage, forKey: .sourceExposureTimesOfCompositeImage)
-        try container.encodeIfPresent(sourceImageNumberOfCompositeImage, forKey: .sourceImageNumberOfCompositeImage)
-        try container.encodeIfPresent(spatialFrequencyResponse, forKey: .spatialFrequencyResponse)
-        try container.encodeIfPresent(spectralSensitivity, forKey: .spectralSensitivity)
-        try container.encodeIfPresent(standardOutputSensitivity, forKey: .standardOutputSensitivity)
-        try container.encodeIfPresent(subjectArea, forKey: .subjectArea)
-        try container.encodeIfPresent(subjectDistance, forKey: .subjectDistance)
-        try container.encodeIfPresent(subjectDistanceRange?.description, forKey: .subjectDistanceRange)
-        try container.encodeIfPresent(subjectLocation, forKey: .subjectLocation)
-        try container.encodeIfPresent(subsecTime, forKey: .subsecTime)
-        try container.encodeIfPresent(subsecTimeDigitized, forKey: .subsecTimeDigitized)
-        try container.encodeIfPresent(subsecTimeOriginal, forKey: .subsecTimeOriginal)
-        try container.encodeIfPresent(userComment, forKey: .userComment)
-        try container.encodeIfPresent(version, forKey: .version)
-        try container.encodeIfPresent(whiteBalance?.description, forKey: .whiteBalance)
-    }
-}

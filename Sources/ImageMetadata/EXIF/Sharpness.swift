@@ -4,7 +4,7 @@ import ImageIO
 extension EXIF {
     /// Indicates the sharpness processing applied by the camera
     /// when the image was shot.
-    public enum Sharpness: Int, Codable {
+    public enum Sharpness: Int, Sendable, Codable {
         /// Normal
         case normal = 0
         /// Soft

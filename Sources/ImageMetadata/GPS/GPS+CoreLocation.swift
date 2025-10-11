@@ -5,7 +5,16 @@ extension GPS {
     ///
     /// > Returns nil if the `CLLocationCoordinate2D` is invalid.
     var coordinate: CLLocationCoordinate2D? {
-        guard let latitude, let longitude else { return nil }
+        guard var latitude, var longitude else { return nil }
+        
+        if let latitudeReference, latitude.sign != latitudeReference.sign {
+            latitude.negate()
+        }
+
+        if let longitudeReference, longitude.sign != longitudeReference.sign {
+            longitude.negate()
+        }
+        
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         guard CLLocationCoordinate2DIsValid(coordinate) else { return nil }
         return coordinate

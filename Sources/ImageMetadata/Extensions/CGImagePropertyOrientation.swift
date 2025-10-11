@@ -1,5 +1,5 @@
 import Foundation
-import ImageIO
+public import ImageIO
 
 extension CGImagePropertyOrientation: @retroactive CustomStringConvertible {
     public var description: String {
@@ -25,6 +25,3 @@ extension CGImagePropertyOrientation: @retroactive CustomStringConvertible {
 }
 
 extension CGImagePropertyOrientation: @retroactive Codable {}
-
-
-

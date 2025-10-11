@@ -1,7 +1,7 @@
 import Foundation
 
 public extension IPTC {
-    enum CreatorContactKey: String, Codable {
+    enum CreatorContactKey: String, Sendable, Codable {
         case contactInfoAddress = "kCGImagePropertyIPTCContactInfoAddress"
         case contactInfoCity = "kCGImagePropertyIPTCContactInfoCity"
         case contactInfoCountry = "kCGImagePropertyIPTCContactInfoCountry"

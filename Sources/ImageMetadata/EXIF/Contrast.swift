@@ -1,10 +1,9 @@
 import Foundation
-import ImageIO
 
 extension EXIF {
     /// Indicates the contrast processing applied by the camera
     /// when the image was shot.
-    public enum Contrast: Int, Codable {
+    public enum Contrast: Int, Sendable, Codable {
         /// Normal
         case normal = 0
         /// Soft

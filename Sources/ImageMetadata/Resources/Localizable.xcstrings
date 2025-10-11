@@ -94,6 +94,9 @@
     "Cannot access %@" : {
 
     },
+    "captured" : {
+
+    },
     "Center weighted average" : {
 
     },
@@ -160,6 +163,9 @@
     "exterior view" : {
 
     },
+    "Failed to parse metadata for '%@'." : {
+
+    },
     "Failed to read image properties." : {
 
     },
@@ -176,6 +182,9 @@
 
     },
     "full-length" : {
+
+    },
+    "general" : {
 
     },
     "general view" : {
@@ -208,7 +217,7 @@
     "key not found '%@')." : {
 
     },
-    "Landscape" : {
+    "landscape" : {
 
     },
     "Landscape mode" : {
@@ -244,7 +253,10 @@
     "night scene" : {
 
     },
-    "Night scene" : {
+    "night-scene" : {
+
+    },
+    "no" : {
 
     },
     "Normal" : {
@@ -298,7 +310,7 @@
     "Please select an image file." : {
 
     },
-    "Portrait" : {
+    "portrait" : {
 
     },
     "Portrait mode" : {
@@ -337,7 +349,10 @@
     "Spot" : {
 
     },
-    "Standard" : {
+    "sRGB" : {
+
+    },
+    "standard" : {
 
     },
     "Standard light A" : {
@@ -394,7 +409,13 @@
     "Two-chip color area sensor" : {
 
     },
+    "Uncalibrated" : {
+
+    },
     "under-water" : {
+
+    },
+    "unknown" : {
 
     },
     "Unknown" : {

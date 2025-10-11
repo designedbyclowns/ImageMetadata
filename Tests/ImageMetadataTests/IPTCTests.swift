@@ -1,22 +1,18 @@
 import Testing
 import Foundation
 import Numerics
+@testable import Shared
 @testable import ImageMetadata
 
 struct IPTCTests {
     let iptc: IPTC
     
     init() throws {
-        let url = try #require(Bundle.module.url(forResource: "iptc", withExtension: "jpg"))
+        let url = try #require(Shared.url(forResource: "iptc", withExtension: "jpg"))
         let imageFile = try ImageFile(url: url)
         let image = try ImageMetadata(imageFile: imageFile)
         self.iptc = try #require(image.iptc)
     }
-    
-    //    @Test func apertureValue() throws {
-    //        let apertureValue = try #require(exif.apertureValue)
-    //        #expect(apertureValue.isApproximatelyEqual(to: 1.35614, absoluteTolerance: 0.00001))
-    //    }
     
     @Test func urgency() throws {
         #expect(iptc.urgency == nil)
@@ -44,6 +40,10 @@ struct IPTCTests {
     
     @Test func contentLocationCode() throws {
         #expect(iptc.contentLocationCode == nil)
+    }
+    
+    @Test func contentLocationName() throws {
+        #expect(iptc.contentLocationName == nil)
     }
     
     @Test func editStatus() throws {

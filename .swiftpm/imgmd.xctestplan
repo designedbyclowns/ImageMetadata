@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "F747248A-D08F-4B94-B712-0E2E193CE544",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "imgmd",
+      "name" : "imgmd"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "imgmdTests",
+        "name" : "imgmdTests"
+      }
+    }
+  ],
+  "version" : 1
+}
