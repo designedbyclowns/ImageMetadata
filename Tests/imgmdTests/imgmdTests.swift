@@ -159,7 +159,7 @@ struct imgmdTests {
     }
     
     private func executableURL() -> URL {
-        var url = #bundle.bundleURL
+        var url = Bundle.module.bundleURL
         
         // This is an ugly hack to support testing both Xcode and Terminal.
         if url.pathComponents.contains("Xcode") {
