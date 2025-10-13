@@ -63,14 +63,48 @@ struct EXIFTests {
        
     @Test func dateTimeDigitized() throws {
         let date = try #require(exif.dateTimeDigitized)
-        let dateString = EXIF.dateFormatter.string(from: date)
-        #expect(dateString == "2024:04:19 08:11:15")
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone.gmt
+        
+        let dateComponents = calendar.dateComponents(
+            [.timeZone, .year, .month, .day, .hour, .minute, .second, .nanosecond],
+            from: date
+        )
+        #expect(dateComponents.timeZone == TimeZone.gmt)
+        #expect(dateComponents.year == 2024)
+        #expect(dateComponents.month == 4)
+        #expect(dateComponents.day == 19)
+        #expect(dateComponents.hour == 12)
+        #expect(dateComponents.minute == 11)
+        #expect(dateComponents.second == 15)
+        #expect(dateComponents.nanosecond != nil)
+        
+        let normalizedSeconds: Double = try Double("\(dateComponents.second!).\(dateComponents.nanosecond!)", format: .number)
+        #expect(normalizedSeconds.isApproximatelyEqual(to: 15.185, absoluteTolerance: 0.0000001))
     }
     
     @Test func dateTimeOriginal() throws {
         let date = try #require(exif.dateTimeOriginal)
-        let dateString = EXIF.dateFormatter.string(from: date)
-        #expect(dateString == "2024:04:19 08:11:15")
+        
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone.gmt
+        
+        let dateComponents = calendar.dateComponents(
+            [.timeZone, .year, .month, .day, .hour, .minute, .second, .nanosecond],
+            from: date
+        )
+        #expect(dateComponents.timeZone == TimeZone.gmt)
+        #expect(dateComponents.year == 2024)
+        #expect(dateComponents.month == 4)
+        #expect(dateComponents.day == 19)
+        #expect(dateComponents.hour == 12)
+        #expect(dateComponents.minute == 11)
+        #expect(dateComponents.second == 15)
+        #expect(dateComponents.nanosecond != nil)
+        
+        let normalizedSeconds: Double = try Double("\(dateComponents.second!).\(dateComponents.nanosecond!)", format: .number)
+        #expect(normalizedSeconds.isApproximatelyEqual(to: 15.185, absoluteTolerance: 0.0000001))
     }
     
     @Test func deviceSettingDescription() {

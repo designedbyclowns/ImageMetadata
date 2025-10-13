@@ -33,14 +33,26 @@ struct GPSTests {
         #expect(gps.timeStamp == "03:04:05")
     }
 
-    @Test func computesDateFromDateAndTimeStamp() {
+    @Test func date() throws {
         let gps = GPS(rawValue: sampleRawGPS())
         #expect(gps.date != nil)
-
-        if let date = gps.date {
-            let formatted = GPS.dateFormatter.string(from: date)
-            #expect(formatted == "2020:01:02 03:04:05")
-        }
+        
+        let date = try #require(gps.date)
+        
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone.gmt
+        
+        let dateComponents = calendar.dateComponents(
+            [.timeZone, .year, .month, .day, .hour, .minute, .second],
+            from: date
+        )
+        #expect(dateComponents.timeZone == TimeZone.gmt)
+        #expect(dateComponents.year == 2020)
+        #expect(dateComponents.month == 1)
+        #expect(dateComponents.day == 2)
+        #expect(dateComponents.hour == 3)
+        #expect(dateComponents.minute == 4)
+        #expect(dateComponents.second == 5)
     }
 
     @Test func handlesMissingFields() {

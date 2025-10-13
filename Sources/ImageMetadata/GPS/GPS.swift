@@ -31,14 +31,13 @@ public struct GPS: Metadata {
     /// The date relative to Coordinated Universal Time (UTC).
     public let dateStamp: String?
 
-    /// The time in UTC (Coordinated Universal Time).
+    /// The time in Coordinated Universal Time (UTC).
     public let timeStamp: String?
     
     /// The date when the location was recorded.
-    public var date: Date? {
-        guard let dateStamp, let timeStamp else { return nil }
-        return Self.dateFormatter.date(from: "\(dateStamp) \(timeStamp)")
-    }
+    ///
+    /// In Coordinated Universal Time (UTC).
+    public let date: Date?
         
     public init(rawValue: NSDictionary) {
         self.altitude = rawValue[kCGImagePropertyGPSAltitude] as? Double
@@ -60,18 +59,26 @@ public struct GPS: Metadata {
         }
         
         self.horizontalPositioningError = rawValue[kCGImagePropertyGPSHPositioningError] as? Double
-        self.dateStamp = rawValue[kCGImagePropertyGPSDateStamp] as? String
-        self.timeStamp = rawValue[kCGImagePropertyGPSTimeStamp] as? String
+        
+        let dateStamp = rawValue[kCGImagePropertyGPSDateStamp] as? String
+        let timeStamp = rawValue[kCGImagePropertyGPSTimeStamp] as? String
+        
+        self.dateStamp = dateStamp
+        self.timeStamp = timeStamp
+        
+        if let dateStamp, let timeStamp {
+            let parseStrategy = Date.VerbatimFormatStyle(
+                format: "\(year: .defaultDigits):\(month: .twoDigits):\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .oneBased)):\(minute: .twoDigits):\(second: .twoDigits)",
+                locale: Locale(identifier: "en_US"),
+                timeZone: .gmt,
+                calendar: .current
+            ).parseStrategy
+            
+            self.date = try? parseStrategy.parse("\(dateStamp) \(timeStamp)")
+        } else {
+            self.date = nil
+        }
     }
-    
-    // MARK: - Formatters
-    
-    static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
-        return formatter
-    }()
 }
 
 extension GPS {

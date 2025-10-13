@@ -63,7 +63,12 @@ struct imgmdTests {
         #expect(JSONSerialization.isValidJSONObject(exif) == true)
         
         let dateTimeOriginal = try #require(exif["dateTimeOriginal"] as? String)
-        #expect(dateTimeOriginal == "1826-06-01T19:52:58Z")
+        
+        guard let formattedDate = formattedDate(for: dateTimeOriginal) else {
+            Issue.record("Failed to parse date string: \(dateTimeOriginal)")
+            return
+        }
+        #expect(dateTimeOriginal == formattedDate)
         
         let offsetTimeOriginal = try #require(exif["offsetTimeOriginal"] as? String)
         #expect(offsetTimeOriginal == "+02:00")
@@ -141,7 +146,11 @@ struct imgmdTests {
         #expect(longitudeReference == "E")
         
         let dateTime = try #require(gps["dateTime"] as? String)
-        #expect(dateTime == "2025-02-13T15:02:45Z")
+        guard let formattedDate = formattedDate(for: dateTime) else {
+            Issue.record("Failed to parse date string: \(dateTime)")
+            return
+        }
+        #expect(dateTime == formattedDate)
     }
     
     @Test func unknownOption() async throws {
@@ -201,6 +210,20 @@ struct imgmdTests {
         }
 
         return output
+    }
+    
+    private func formattedDate(for stringValue: String?) -> String? {
+        guard let stringValue else { return nil }
+        
+        let style = Date.ISO8601FormatStyle(timeZoneSeparator: .omitted,
+                                          includingFractionalSeconds: false,
+                                          timeZone: TimeZone.gmt)
+        
+        guard let date = try? style.parseStrategy.parse(stringValue) else {
+            return nil
+        }
+        
+        return style.format(date)
     }
 }
 

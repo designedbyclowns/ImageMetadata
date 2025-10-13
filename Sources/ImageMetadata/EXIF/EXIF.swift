@@ -82,14 +82,20 @@ public struct EXIF: Metadata {
     /// be set to 3, indicating that the image was recorded on a DSC.
     public let fileSource: Int?
     
-    /// The strobe energy when the image was captured, in beam candle power seconds.
-    public let flashEnergy: Double?
+    /// Firmware information.
+    public let firmware: String?
     
-    /// The flash status when the image was shot.
+    /// The strobe energy when the image was captured, in beam candle power seconds.
     public let flash: Int?
+    
+    /// Flash compensation.
+    public let flashCompensation: String?
     
     /// The Flashpix format version supported by a FPXR file.
     public let flashPixVersion: String?
+    
+    /// The strobe energy when the image was captured, in beam candle power seconds.
+    public let flashEnergy: Double?
     
     /// The F-number.
     public let fNumber: Double?
@@ -120,6 +126,9 @@ public struct EXIF: Metadata {
     public let gamma: Double?
     
     /// The unique ID of the image.
+    public let imageNumber: String?
+    
+    /// The unique ID of the image.
     public let imageUniqueID: String?
     
     /// The ISO speed setting used to capture the image.
@@ -134,8 +143,20 @@ public struct EXIF: Metadata {
     /// The ISO speed ratings.
     public let isoSpeedRatings: [Int]?
     
-    /// A string with the name of the lens manufacturer.
+    /// A string with the lens ID.
+    public let lensID: String?
+    
+    /// Lens information.
+    public let lensInfo: String?
+    
+    /// A string with the lens manufacturer.
     public let lensMake: String?
+    
+    /// A string with the lens model information.
+    public let lensModel: String?
+    
+    /// A string with the lens’s serial number.
+    public let lensSerialNumber: String?
     
     /// The specification information for the camera lens.
     ///
@@ -168,6 +189,9 @@ public struct EXIF: Metadata {
     ///  Specified in ISO 14524.
     public let oecf: String?
     
+    /// The owner name.
+    public let ownerName: String?
+    
     /// Time difference from Universal Time Coordinated (UTC) including
     /// daylight saving time of `DateTime` tag.
     public let offsetTime: String?
@@ -191,6 +215,9 @@ public struct EXIF: Metadata {
     
     /// A sound file related to the image.
     public let relatedSoundFile: String?
+    
+    /// The serial number.
+    public let serialNumber: String?
     
     /// The ``EXIF/Saturation`` setting.
     public let saturation: EXIF.Saturation?
@@ -268,38 +295,7 @@ public struct EXIF: Metadata {
     /// The white balance mode.
     public let whiteBalance: EXIF.WhiteBalance?
     
-    // MARK: - Auxiliary (ExifAux) Stored Properties
-    
-    /// Firmware information.
-    public let firmware: String?
-    
-    /// Flash compensation.
-    public let flashCompensation: String?
-    
-    /// The image number.
-    public let imageNumber: String?
-    
-    /// The lens ID.
-    public let lensID: String?
-    
-    /// Lens information.
-    public let lensInfo: String?
-    
-    /// A string with the lens model information.
-    public let lensModel: String?
-    
-    /// A string with the lens’s serial number.
-    public let lensSerialNumber: String?
-    
-    /// The owner name.
-    public let ownerName: String?
-    
-    /// The serial number.
-    public let serialNumber: String?
-    
     public init(rawValue: NSDictionary) {
-        
-        
         self.apertureValue = rawValue[kCGImagePropertyExifApertureValue] as? Double
         self.bodySerialNumber = rawValue[kCGImagePropertyExifBodySerialNumber] as? String
         self.brightnessValue = rawValue[kCGImagePropertyExifBrightnessValue] as? Double
@@ -335,13 +331,17 @@ public struct EXIF: Metadata {
         }
         
         if let s = rawValue[kCGImagePropertyExifDateTimeDigitized] as? String {
-            self.dateTimeDigitized = EXIF.dateFormatter.date(from: s)
+            let subsec = rawValue[kCGImagePropertyExifSubsecTimeDigitized] as? String
+            let offset = rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
+            self.dateTimeDigitized = try? Self.parse(dateTime: s, subsec: subsec, offset: offset)
         } else {
             self.dateTimeDigitized = nil
         }
         
         if let s = rawValue[kCGImagePropertyExifDateTimeOriginal] as? String {
-            self.dateTimeOriginal = EXIF.dateFormatter.date(from: s)
+            let subsec = rawValue[kCGImagePropertyExifSubsecTimeOriginal] as? String
+            let offset = rawValue[kCGImagePropertyExifOffsetTimeOriginal] as? String
+            self.dateTimeOriginal = try? Self.parse(dateTime: s, subsec: subsec, offset: offset)
         } else {
             self.dateTimeOriginal = nil
         }
@@ -406,9 +406,12 @@ public struct EXIF: Metadata {
         }
         
         self.oecf = rawValue[kCGImagePropertyExifOECF] as? String
+        
         self.offsetTime = rawValue[kCGImagePropertyExifOffsetTime] as? String
         self.offsetTimeDigitized = rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
         self.offsetTimeOriginal = rawValue[kCGImagePropertyExifOffsetTimeOriginal] as? String
+        
+        
         self.pixelXDimension = rawValue[kCGImagePropertyExifPixelXDimension] as? Int
         self.pixelYDimension = rawValue[kCGImagePropertyExifPixelYDimension] as? Int
         self.recommendedExposureIndex = rawValue[kCGImagePropertyExifRecommendedExposureIndex] as? Int
@@ -476,6 +479,7 @@ public struct EXIF: Metadata {
         }
         
         // Auxiliary (ExifAux) fields
+        
         let aux = rawValue[kCGImagePropertyExifAuxDictionary] as? NSDictionary
         
         self.firmware = aux?[kCGImagePropertyExifAuxFirmware] as? String
@@ -490,13 +494,39 @@ public struct EXIF: Metadata {
         self.serialNumber = aux?[kCGImagePropertyExifAuxSerialNumber] as? String
     }
     
-    // MARK: - Formatters
+    // MARK: - Internal
     
-    static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
-        return formatter
-    }()
+    static func parse(dateTime: String, subsec: String?, offset: String?) throws -> Date? {
+        var dateString = dateTime
+        
+        let subsec = subsec ?? "0"
+        let ss = (try? Int(subsec, format: .number)) ?? 0
+        dateString += ".\(ss)"
+        
+        let timeZone: TimeZone = Self.timeZone(forOffset: offset) ?? .current
+        
+        let style = Date.VerbatimFormatStyle(
+            format: "\(year: .defaultDigits):\(month: .twoDigits):\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .oneBased)):\(minute: .twoDigits):\(second: .twoDigits).\(secondFraction: .fractional(3))",
+            locale: Locale(identifier: "en_US"),
+            timeZone: timeZone,
+            calendar: .current
+        )
+
+        return try style.parseStrategy.parse(dateString)
+    }
     
+    static func timeZone(forOffset offset: String?) -> TimeZone? {
+        guard let offset, !offset.isEmpty else { return nil }
+        
+        let components = offset.split(separator: ":").compactMap { try? Int(String($0), format: .number) }
+        guard components.count >= 1, components.count <= 2 else { return nil }
+        
+        var seconds = components[0] * 60 * 60
+        if components.count == 2 {
+            seconds += components[1] * 60
+        }
+        
+        return TimeZone(secondsFromGMT: Int(seconds))
+    }
 }
 
