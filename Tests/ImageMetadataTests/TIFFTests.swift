@@ -173,11 +173,8 @@ struct TIFFTests {
 
         // Act
         let encoder = JSONEncoder()
-        
-        encoder.dateEncodingStrategy = .secondsSince1970
-        
-        
         encoder.dateEncodingStrategy = .iso8601
+        
         let data = try encoder.encode(tiff)
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
 
@@ -198,7 +195,7 @@ struct TIFFTests {
         #expect(resUnit == 2)
         #expect(xRes == 540.0)
         #expect(yRes == 540.0)
-        #expect(dateTime == "2025-02-13T23:34:57Z")
+        #expect(dateTime == "2025-02-13T15:34:57Z")
                 
         // Omitted keys should be absent
         #expect(json?["compression"] == nil)

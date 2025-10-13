@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import Shared
 @testable import imgmd
+@testable import ImageMetadata
 
 struct imgmdTests {
 
@@ -64,11 +65,7 @@ struct imgmdTests {
         
         let dateTimeOriginal = try #require(exif["dateTimeOriginal"] as? String)
         
-        guard let formattedDate = formattedDate(for: dateTimeOriginal) else {
-            Issue.record("Failed to parse date string: \(dateTimeOriginal)")
-            return
-        }
-        #expect(dateTimeOriginal == formattedDate)
+        #expect(dateTimeOriginal == "1826-06-01T10:00:00Z")
         
         let offsetTimeOriginal = try #require(exif["offsetTimeOriginal"] as? String)
         #expect(offsetTimeOriginal == "+02:00")
@@ -146,11 +143,7 @@ struct imgmdTests {
         #expect(longitudeReference == "E")
         
         let dateTime = try #require(gps["dateTime"] as? String)
-        guard let formattedDate = formattedDate(for: dateTime) else {
-            Issue.record("Failed to parse date string: \(dateTime)")
-            return
-        }
-        #expect(dateTime == formattedDate)
+        #expect(dateTime == "2025-02-13T15:02:45Z")
     }
     
     @Test func unknownOption() async throws {
@@ -210,20 +203,6 @@ struct imgmdTests {
         }
 
         return output
-    }
-    
-    private func formattedDate(for stringValue: String?) -> String? {
-        guard let stringValue else { return nil }
-        
-        let style = Date.ISO8601FormatStyle(timeZoneSeparator: .omitted,
-                                          includingFractionalSeconds: false,
-                                          timeZone: TimeZone.gmt)
-        
-        guard let date = try? style.parseStrategy.parse(stringValue) else {
-            return nil
-        }
-        
-        return style.format(date)
     }
 }
 
