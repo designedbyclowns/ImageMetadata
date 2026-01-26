@@ -1,3 +1,5 @@
+#if canImport(CoreLocation)
+
 import CoreLocation
 
 extension GPS {
@@ -34,3 +36,4 @@ extension GPS {
         )
     }
 }
+#endif // canImport(CoreLocation)

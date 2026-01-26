@@ -209,18 +209,18 @@ public struct IPTC: Metadata {
 
     
     public init(rawValue: NSDictionary) {
-        
-        let parseStrategy = Date.VerbatimFormatStyle(
+        let dateParseStrategy = Date.VerbatimFormatStyle(
             format: "\(year: .defaultDigits)\(month: .twoDigits)\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .oneBased))\(minute: .twoDigits)\(second: .twoDigits)",
             locale: Locale(identifier: "en_US"),
+            // IPTC date and time data provides no offset or time zone info so assume local.
             timeZone: .current,
-            calendar: .current
+            calendar: .gregorian
         ).parseStrategy
         
         func parse(dateString: String?, timeString: String?) -> Date? {
             guard let dateString else { return nil }
             let time = timeString ?? "000000"
-            return try? parseStrategy.parse("\(dateString) \(time)")
+            return try? dateParseStrategy.parse("\(dateString) \(time)")
         }
         
         self.actionAdvised = rawValue[kCGImagePropertyIPTCActionAdvised] as? String
@@ -270,14 +270,7 @@ public struct IPTC: Metadata {
         self.headline = rawValue[kCGImagePropertyIPTCHeadline] as? String
         self.imageOrientation = rawValue[kCGImagePropertyIPTCImageOrientation] as? String
         self.imageType = rawValue[kCGImagePropertyIPTCImageType] as? String
-        
-        if let kws = rawValue[kCGImagePropertyIPTCKeywords] as? [String] {
-            let nonEmpty = kws.filter { $0.isEmpty == false }
-            self.keywords = nonEmpty.isEmpty ? nil : kws
-        } else {
-            self.keywords = nil
-        }
-        
+        self.keywords = rawValue[kCGImagePropertyIPTCKeywords] as? [String]
         self.languageIdentifier = rawValue[kCGImagePropertyIPTCLanguageIdentifier] as? String
         self.objectAttribute = rawValue[kCGImagePropertyIPTCObjectAttributeReference] as? String
         self.objectCycle = rawValue[kCGImagePropertyIPTCObjectCycle] as? String
@@ -287,11 +280,10 @@ public struct IPTC: Metadata {
         self.originatingProgram = rawValue[kCGImagePropertyIPTCOriginatingProgram] as? String
         self.programVersion = rawValue[kCGImagePropertyIPTCProgramVersion] as? String
         self.provinceState = rawValue[kCGImagePropertyIPTCProvinceState] as? String
-        if let referenceDateString =  rawValue[kCGImagePropertyIPTCReferenceDate] as? String {
-            self.referenceDate = try? parseStrategy.parse(referenceDateString)
-        } else {
-            self.referenceDate = nil
-        }
+        
+        self.referenceDate = (rawValue[kCGImagePropertyIPTCReferenceDate] as? String)
+            .map({ try? dateParseStrategy.parse($0) }) ?? nil
+        
         self.referenceNumber = rawValue[kCGImagePropertyIPTCReferenceNumber] as? String
         self.referenceService = rawValue[kCGImagePropertyIPTCReferenceService] as? String
         self.releaseDate = parse(
@@ -300,12 +292,8 @@ public struct IPTC: Metadata {
         )
         self.rightsUsageTerms = rawValue[kCGImagePropertyIPTCRightsUsageTerms] as? String
         
-        if let values = rawValue[kCGImagePropertyIPTCScene] as? [String] {
-            let scenes = values.compactMap { IPTC.NewsCode.Scene(rawValue: $0) }
-            self.sceneCodes = scenes.isEmpty ? nil : scenes
-        } else {
-            self.sceneCodes = nil
-        }
+        let scenes = (rawValue[kCGImagePropertyIPTCScene] as? [String])?.compactMap({ IPTC.NewsCode.Scene(rawValue: $0) }) ?? []
+        self.sceneCodes = scenes.isEmpty ? nil : scenes
         
         self.source = rawValue[kCGImagePropertyIPTCSource] as? String
         self.specialInstructions = rawValue[kCGImagePropertyIPTCSpecialInstructions] as? String

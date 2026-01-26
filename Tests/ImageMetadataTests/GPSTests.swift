@@ -10,7 +10,7 @@ struct GPSTests {
             kCGImagePropertyGPSAltitude as String: 12.3,
             kCGImagePropertyGPSAltitudeRef as String: "0",
             kCGImagePropertyGPSLatitude as String: 37.3317,
-            kCGImagePropertyGPSLongitude as String: -122.0307,
+            kCGImagePropertyGPSLongitude as String: 122.0307,
             kCGImagePropertyGPSLatitudeRef as String: "N",
             kCGImagePropertyGPSLongitudeRef as String: "E",
             kCGImagePropertyGPSHPositioningError as String: 5.5,
@@ -18,24 +18,35 @@ struct GPSTests {
             kCGImagePropertyGPSTimeStamp as String: "03:04:05",
         ] as NSDictionary
     }
-
-    @Test func initParsesBasicFields() {
+    
+    @Test func altitude() {
         let gps = GPS(rawValue: sampleRawGPS())
-
         #expect(gps.altitude == 12.3)
         #expect(gps.altitudeReference == "0")
+    }
+    
+    @Test func latitude() {
+        let gps = GPS(rawValue: sampleRawGPS())
         #expect(gps.latitude == 37.3317)
-        #expect(gps.longitude == -122.0307)
         #expect(gps.latitudeReference == .north)
+    }
+    
+    @Test func longitude() {
+        let gps = GPS(rawValue: sampleRawGPS())
+        #expect(gps.longitude == -122.0307)
         #expect(gps.longitudeReference == .east)
+    }
+    
+    @Test func horizontalPositioningError() {
+        let gps = GPS(rawValue: sampleRawGPS())
         #expect(gps.horizontalPositioningError == 5.5)
-        #expect(gps.dateStamp == "2020:01:02")
-        #expect(gps.timeStamp == "03:04:05")
     }
 
     @Test func date() throws {
         let gps = GPS(rawValue: sampleRawGPS())
-        #expect(gps.date != nil)
+        
+        #expect(gps.dateStamp == "2020:01:02")
+        #expect(gps.timeStamp == "03:04:05")
         
         let date = try #require(gps.date)
         

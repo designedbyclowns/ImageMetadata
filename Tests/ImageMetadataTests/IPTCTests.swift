@@ -1,17 +1,39 @@
 import Testing
 import Foundation
 import Numerics
+import ImageIO
 @testable import Shared
 @testable import ImageMetadata
 
 struct IPTCTests {
+    static func sampleRawIPTC() -> NSDictionary {
+        return [
+            kCGImagePropertyIPTCKeywords as String: ["Keyword1ref2023.2", "Keyword2ref2023.2", "Keyword3ref2023.2"],
+            kCGImagePropertyIPTCCaptionAbstract as String: "The description aka caption (ref2023.2)",
+            kCGImagePropertyIPTCHeadline as String: "The Headline (ref2023.2)",
+            kCGImagePropertyIPTCCredit as String: "Credit Line (ref2023.2)",
+            kCGImagePropertyIPTCCopyrightNotice as String: "Copyright (Notice) 2023.2 IPTC - www.iptc.org  (ref2023.2)",
+            kCGImagePropertyIPTCRightsUsageTerms as String: "Rights Usage Terms (ref2023.2)",
+            kCGImagePropertyIPTCSpecialInstructions as String: "An Instruction (ref2023.2)",
+            kCGImagePropertyIPTCByline as String: ["Creator1 (ref2023.2)"],
+            kCGImagePropertyIPTCSupplementalCategory as String: NSNull(),
+            kCGImagePropertyIPTCLanguageIdentifier as String: NSNull(),
+            kCGImagePropertyIPTCCity as String: "City (Core) (ref2023.2)",
+            kCGImagePropertyIPTCSubLocation as String: "Sublocation (Core) (ref2023.2)",
+            kCGImagePropertyIPTCProvinceState as String: "Province/State(Core)(ref2023.2)",
+            kCGImagePropertyIPTCCountryPrimaryLocationCode as String: "R23",
+            kCGImagePropertyIPTCCountryPrimaryLocationName as String: "Country (Core) (ref2023.2)",
+            kCGImagePropertyIPTCOriginalTransmissionReference as String: "Job Id (ref2023.2)",
+            kCGImagePropertyIPTCSource as String: "Source (ref2023.2)",
+            kCGImagePropertyIPTCObjectName as String: "The Title (ref2023.2)"
+        ]
+    }
+    
     let iptc: IPTC
     
-    init() throws {
-        let url = try #require(Shared.url(forResource: "iptc", withExtension: "jpg"))
-        let imageFile = try ImageFile(url: url)
-        let image = try ImageMetadata(imageFile: imageFile)
-        self.iptc = try #require(image.iptc)
+    init() {
+        let dict = Self.sampleRawIPTC()
+        self.iptc = IPTC(rawValue: dict)
     }
     
     @Test func urgency() throws {

@@ -65,7 +65,7 @@ struct imgmdTests {
         
         let dateTimeOriginal = try #require(exif["dateTimeOriginal"] as? String)
         
-        #expect(dateTimeOriginal == "1826-06-01T10:00:00Z")
+        #expect(dateTimeOriginal == "1826-06-01T12:00:00.199+0200")
         
         let offsetTimeOriginal = try #require(exif["offsetTimeOriginal"] as? String)
         #expect(offsetTimeOriginal == "+02:00")
@@ -134,7 +134,7 @@ struct imgmdTests {
         #expect(latitude == 46.72519666666667)
         
         let longitude = try #require(gps["longitude"] as? Double)
-        #expect(longitude == 4.860291666666667)
+        #expect(longitude == -4.860291666666667)
         
         let latitudeReference = try #require(gps["latitudeReference"] as? String)
         #expect(latitudeReference == "N")

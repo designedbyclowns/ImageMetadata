@@ -96,8 +96,9 @@ public struct TIFF: Metadata {
             let parseStrategy = Date.VerbatimFormatStyle(
                 format: "\(year: .defaultDigits):\(month: .twoDigits):\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .oneBased)):\(minute: .twoDigits):\(second: .twoDigits)",
                 locale: Locale(identifier: "en_US"),
-                timeZone: .current, // assume local time
-                calendar: .current
+                // TIFF date format provides no offset or time zone info so assume local.
+                timeZone: .current,
+                calendar: .gregorian
             ).parseStrategy
             
             self.dateTime = try? parseStrategy.parse(dateTimeString)

@@ -282,6 +282,15 @@ public struct EXIF: Metadata {
     /// The fraction of seconds for the original date and time tag.
     public let subsecTimeOriginal: String?
     
+    /// The time zone.
+    public let timeZone: TimeZone?
+    
+    /// The time zone of the digitized date.
+    public let timeZoneDigitized: TimeZone?
+    
+    /// The time zone of the original date.
+    public let timeZoneOriginal: TimeZone?
+    
     /// A user comment.
     ///
     /// A tag for EXIF users to write keywords or comments on the image
@@ -309,59 +318,62 @@ public struct EXIF: Metadata {
         }
         
         self.componentsConfiguration = rawValue[kCGImagePropertyExifComponentsConfiguration] as? [Int]
-        
-        if let v = rawValue[kCGImagePropertyExifCompositeImage] as? Int {
-            self.compositeImage = CompositeImage(rawValue: v)
-        } else {
-            self.compositeImage = nil
-        }
+
+        self.compositeImage = (rawValue[kCGImagePropertyExifCompositeImage] as? Int)
+            .map({ CompositeImage(rawValue: $0) }) ?? nil
         
         self.compressedBitsPerPixel = rawValue[kCGImagePropertyExifCompressedBitsPerPixel] as? Double
         
-        if let v = rawValue[kCGImagePropertyExifContrast] as? Int {
-            self.contrast = EXIF.Contrast(rawValue: v)
-        } else {
-            self.contrast = nil
-        }
+        self.contrast = (rawValue[kCGImagePropertyExifContrast] as? Int)
+            .map({ EXIF.Contrast(rawValue: $0) }) ?? nil
         
-        if let v = rawValue[kCGImagePropertyExifCustomRendered] as? Int {
-            self.customRendered = EXIF.CustomRendered(rawValue: v)
-        } else {
-            self.customRendered = nil
-        }
+        self.customRendered = (rawValue[kCGImagePropertyExifCustomRendered] as? Int)
+            .map({ EXIF.CustomRendered(rawValue: $0) }) ?? nil
         
-        if let s = rawValue[kCGImagePropertyExifDateTimeDigitized] as? String {
-            let subsec = rawValue[kCGImagePropertyExifSubsecTimeDigitized] as? String
-            let offset = rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
-            self.dateTimeDigitized = try? Self.parse(dateTime: s, subsec: subsec, offset: offset)
-        } else {
-            self.dateTimeDigitized = nil
-        }
+        // Date digitized
         
-        if let s = rawValue[kCGImagePropertyExifDateTimeOriginal] as? String {
-            let subsec = rawValue[kCGImagePropertyExifSubsecTimeOriginal] as? String
-            let offset = rawValue[kCGImagePropertyExifOffsetTimeOriginal] as? String
-            self.dateTimeOriginal = try? Self.parse(dateTime: s, subsec: subsec, offset: offset)
-        } else {
-            self.dateTimeOriginal = nil
-        }
+        let offsetTimeDigitized = rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
+        self.offsetTimeDigitized = offsetTimeDigitized
+        
+        let timeZoneDigitized = Self.timeZone(forOffset: offsetTimeDigitized)
+        self.timeZoneDigitized = timeZoneDigitized
+        
+        let subsecTimeDigitized = rawValue[kCGImagePropertyExifSubsecTimeDigitized] as? String
+        self.subsecTimeDigitized = subsecTimeDigitized
+        
+        self.dateTimeDigitized = try? Self.parse(
+            dateTime: rawValue[kCGImagePropertyExifDateTimeDigitized] as? String,
+            subsec: subsecTimeDigitized,
+            timeZone: timeZoneDigitized
+        )
+        
+        // Original date
+        
+        let offsetTimeOriginal = rawValue[kCGImagePropertyExifOffsetTimeOriginal] as? String
+        self.offsetTimeOriginal = offsetTimeOriginal
+        
+        let timeZoneOriginal = Self.timeZone(forOffset: offsetTimeOriginal)
+        self.timeZoneOriginal = timeZoneOriginal
+        
+        let subsecTimeOriginal = rawValue[kCGImagePropertyExifSubsecTimeOriginal] as? String
+        self.subsecTimeOriginal = subsecTimeOriginal
+        
+        self.dateTimeOriginal = try? Self.parse(
+            dateTime: rawValue[kCGImagePropertyExifDateTimeOriginal] as? String,
+            subsec: subsecTimeOriginal,
+            timeZone: timeZoneOriginal
+        )
         
         self.deviceSettingDescription = rawValue[kCGImagePropertyExifDeviceSettingDescription] as? String
         self.digitalZoomRatio = rawValue[kCGImagePropertyExifDigitalZoomRatio] as? Double
         self.exposureBiasValue = rawValue[kCGImagePropertyExifExposureBiasValue] as? Double
         self.exposureIndex = rawValue[kCGImagePropertyExifExposureIndex] as? Double
         
-        if let v = rawValue[kCGImagePropertyExifExposureMode] as? Int {
-            self.exposureMode = EXIF.ExposureMode(rawValue: v)
-        } else {
-            self.exposureMode = nil
-        }
+        self.exposureMode = (rawValue[kCGImagePropertyExifExposureMode] as? Int)
+            .map({ EXIF.ExposureMode(rawValue: $0) }) ?? nil
         
-        if let v = rawValue[kCGImagePropertyExifExposureProgram] as? Int {
-            self.exposureProgram = EXIF.ExposureProgram(rawValue: v)
-        } else {
-            self.exposureProgram = nil
-        }
+        self.exposureProgram = (rawValue[kCGImagePropertyExifExposureProgram] as? Int)
+            .map({ EXIF.ExposureProgram(rawValue: $0) }) ?? nil
         
         self.exposureTime = rawValue[kCGImagePropertyExifExposureTime] as? Double
         self.fileSource = rawValue[kCGImagePropertyExifFileSource] as? Int
@@ -369,7 +381,7 @@ public struct EXIF: Metadata {
         self.flash = rawValue[kCGImagePropertyExifFlash] as? Int
         
         if let components = rawValue[kCGImagePropertyExifFlashPixVersion] as? [CustomStringConvertible] {
-            self.flashPixVersion = components.map { String(describing: $0) }.joined(separator: ".")
+            self.flashPixVersion = components.map({ String(describing: $0) }).joined(separator: ".")
         } else {
             self.flashPixVersion = nil
         }
@@ -390,60 +402,41 @@ public struct EXIF: Metadata {
         self.lensMake = rawValue[kCGImagePropertyExifLensMake] as? String
         self.lensSpecification = rawValue[kCGImagePropertyExifLensSpecification] as? String
         
-        if let v = rawValue[kCGImagePropertyExifLightSource] as? Int {
-            self.lightSource = EXIF.LightSource(rawValue: v)
-        } else {
-            self.lightSource = nil
-        }
+        self.lightSource = (rawValue[kCGImagePropertyExifLightSource] as? Int)
+            .map({ EXIF.LightSource(rawValue: $0) }) ?? nil
         
         self.makerNote = rawValue[kCGImagePropertyExifMakerNote] as? String
         self.maxApertureValue = rawValue[kCGImagePropertyExifMaxApertureValue] as? Double
         
-        if let v = rawValue[kCGImagePropertyExifMeteringMode] as? Int {
-            self.meteringMode = EXIF.MeteringMode(rawValue: v)
-        } else {
-            self.meteringMode = nil
-        }
+        self.meteringMode = (rawValue[kCGImagePropertyExifMeteringMode] as? Int)
+            .map({ EXIF.MeteringMode(rawValue: $0) }) ?? nil
         
         self.oecf = rawValue[kCGImagePropertyExifOECF] as? String
         
-        self.offsetTime = rawValue[kCGImagePropertyExifOffsetTime] as? String
-        self.offsetTimeDigitized = rawValue[kCGImagePropertyExifOffsetTimeDigitized] as? String
-        self.offsetTimeOriginal = rawValue[kCGImagePropertyExifOffsetTimeOriginal] as? String
-        
+        let offset = rawValue[kCGImagePropertyExifOffsetTime] as? String
+        self.offsetTime = offset
+        self.timeZone = Self.timeZone(forOffset: offset)
         
         self.pixelXDimension = rawValue[kCGImagePropertyExifPixelXDimension] as? Int
         self.pixelYDimension = rawValue[kCGImagePropertyExifPixelYDimension] as? Int
         self.recommendedExposureIndex = rawValue[kCGImagePropertyExifRecommendedExposureIndex] as? Int
         self.relatedSoundFile = rawValue[kCGImagePropertyExifRelatedSoundFile] as? String
         
-        if let v = rawValue[kCGImagePropertyExifSaturation] as? Int {
-            self.saturation = EXIF.Saturation(rawValue: v)
-        } else {
-            self.saturation = nil
-        }
+        self.saturation = (rawValue[kCGImagePropertyExifSaturation] as? Int)
+            .map({ EXIF.Saturation(rawValue: $0) }) ?? nil
         
-        if let v = rawValue[kCGImagePropertyExifSceneCaptureType] as? Int {
-            self.sceneCaptureType = EXIF.SceneCaptureType(rawValue: v)
-        } else {
-            self.sceneCaptureType = nil
-        }
+        self.sceneCaptureType = (rawValue[kCGImagePropertyExifSceneCaptureType] as? Int)
+            .map({ EXIF.SceneCaptureType(rawValue: $0) }) ?? nil
         
         self.sceneType = rawValue[kCGImagePropertyExifSceneType] as? Int
         
-        if let v = rawValue[kCGImagePropertyExifSensingMethod] as? Int {
-            self.sensingMethod = EXIF.SensingMethod(rawValue: v)
-        } else {
-            self.sensingMethod = nil
-        }
+        self.sensingMethod = (rawValue[kCGImagePropertyExifSensingMethod] as? Int)
+            .map({ EXIF.SensingMethod(rawValue: $0) }) ?? nil
         
         self.sensitivityType = rawValue[kCGImagePropertyExifSensitivityType] as? Double
         
-        if let v = rawValue[kCGImagePropertyExifSharpness] as? Int {
-            self.sharpness = EXIF.Sharpness(rawValue: v)
-        } else {
-            self.sharpness = nil
-        }
+        self.sharpness = (rawValue[kCGImagePropertyExifSharpness] as? Int)
+            .map({ EXIF.Sharpness(rawValue: $0) }) ?? nil
         
         self.shutterSpeedValue = rawValue[kCGImagePropertyExifShutterSpeedValue] as? Double
         self.sourceExposureTimesOfCompositeImage = rawValue[kCGImagePropertyExifSourceExposureTimesOfCompositeImage] as? String
@@ -454,29 +447,21 @@ public struct EXIF: Metadata {
         self.subjectArea = rawValue[kCGImagePropertyExifSubjectArea] as? [Int]
         self.subjectDistance = rawValue[kCGImagePropertyExifSubjectDistance] as? Double
         
-        if let v = rawValue[kCGImagePropertyExifSubjectDistRange] as? Int {
-            self.subjectDistanceRange = EXIF.SubjectDistanceRange(rawValue: v)
-        } else {
-            self.subjectDistanceRange = nil
-        }
+        self.subjectDistanceRange = (rawValue[kCGImagePropertyExifSubjectDistRange] as? Int)
+            .map({ EXIF.SubjectDistanceRange(rawValue: $0) }) ?? nil
         
         self.subjectLocation = rawValue[kCGImagePropertyExifSubjectLocation] as? Int
         self.subsecTime = rawValue[kCGImagePropertyExifSubsecTime] as? String
-        self.subsecTimeDigitized = rawValue[kCGImagePropertyExifSubsecTimeDigitized] as? String
-        self.subsecTimeOriginal = rawValue[kCGImagePropertyExifSubsecTimeOriginal] as? String
         self.userComment = rawValue[kCGImagePropertyExifUserComment] as? String
         
         if let components = rawValue[kCGImagePropertyExifVersion] as? [CustomStringConvertible] {
-            self.version = components.map { String(describing: $0) }.joined(separator: ".")
+            self.version = components.map({ String(describing: $0) }).joined(separator: ".")
         } else {
             self.version = nil
         }
         
-        if let v = rawValue[kCGImagePropertyExifWhiteBalance] as? Int {
-            self.whiteBalance = EXIF.WhiteBalance(rawValue: v)
-        } else {
-            self.whiteBalance = nil
-        }
+        self.whiteBalance = (rawValue[kCGImagePropertyExifWhiteBalance] as? Int)
+            .map({ EXIF.WhiteBalance(rawValue: $0) }) ?? nil
         
         // Auxiliary (ExifAux) fields
         
@@ -494,28 +479,26 @@ public struct EXIF: Metadata {
         self.serialNumber = aux?[kCGImagePropertyExifAuxSerialNumber] as? String
     }
     
-    // MARK: - Internal
+    // MARK: - Private
     
-    static func parse(dateTime: String, subsec: String?, offset: String?) throws -> Date? {
-        var dateString = dateTime
+    static private func parse(dateTime: String?, subsec: String?, timeZone: TimeZone?) throws -> Date? {
+        guard var dateTime else { return nil }
         
         let subsec = subsec ?? "0"
         let ss = (try? Int(subsec, format: .number)) ?? 0
-        dateString += ".\(ss)"
-        
-        let timeZone: TimeZone = Self.timeZone(forOffset: offset) ?? .current
-        
+        dateTime += ".\(ss)"
+                
         let style = Date.VerbatimFormatStyle(
             format: "\(year: .defaultDigits):\(month: .twoDigits):\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .oneBased)):\(minute: .twoDigits):\(second: .twoDigits).\(secondFraction: .fractional(3))",
             locale: Locale(identifier: "en_US"),
-            timeZone: timeZone,
-            calendar: .current
+            timeZone: timeZone ?? .gmt,
+            calendar: .gregorian
         )
 
-        return try style.parseStrategy.parse(dateString)
+        return try style.parseStrategy.parse(dateTime)
     }
     
-    static func timeZone(forOffset offset: String?) -> TimeZone? {
+    static private func timeZone(forOffset offset: String?) -> TimeZone? {
         guard let offset, !offset.isEmpty else { return nil }
         
         let components = offset.split(separator: ":").compactMap { try? Int(String($0), format: .number) }
