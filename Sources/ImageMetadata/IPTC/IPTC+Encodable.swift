@@ -1,3 +1,5 @@
+import Foundation
+
 extension IPTC: Encodable {
     enum CodingKeys: String, CodingKey {
         case actionAdvised

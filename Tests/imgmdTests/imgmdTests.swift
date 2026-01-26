@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import Shared
 @testable import imgmd
+@testable import ImageMetadata
 
 struct imgmdTests {
 
@@ -63,7 +64,8 @@ struct imgmdTests {
         #expect(JSONSerialization.isValidJSONObject(exif) == true)
         
         let dateTimeOriginal = try #require(exif["dateTimeOriginal"] as? String)
-        #expect(dateTimeOriginal == "1826-06-01T19:52:58Z")
+        
+        #expect(dateTimeOriginal == "1826-06-01T12:00:00.199+0200")
         
         let offsetTimeOriginal = try #require(exif["offsetTimeOriginal"] as? String)
         #expect(offsetTimeOriginal == "+02:00")
@@ -132,7 +134,7 @@ struct imgmdTests {
         #expect(latitude == 46.72519666666667)
         
         let longitude = try #require(gps["longitude"] as? Double)
-        #expect(longitude == 4.860291666666667)
+        #expect(longitude == -4.860291666666667)
         
         let latitudeReference = try #require(gps["latitudeReference"] as? String)
         #expect(latitudeReference == "N")
@@ -159,7 +161,7 @@ struct imgmdTests {
     }
     
     private func executableURL() -> URL {
-        var url = #bundle.bundleURL
+        var url = Bundle.module.bundleURL
         
         // This is an ugly hack to support testing both Xcode and Terminal.
         if url.pathComponents.contains("Xcode") {

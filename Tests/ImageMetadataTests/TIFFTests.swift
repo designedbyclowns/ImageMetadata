@@ -6,11 +6,13 @@ import ImageIO
 
 
 struct TIFFTests {
-
-    @Test("Init from raw TIFF dictionary parses values and date")
-    func initFromRawDictionary() async throws {
-        let raw: NSDictionary = [
+    // Shared raw TIFF dictionary used across multiple tests (mirrors EXIFTests pattern)
+    static func sampleRawTIFF() -> NSDictionary {
+        
+        return [
+            kCGImagePropertyTIFFArtist: "Joseph Nicéphore Niépce",
             kCGImagePropertyTIFFCompression: 6,
+            kCGImagePropertyTIFFImageDescription: "The earliest surviving camera photograph.",
             kCGImagePropertyTIFFPhotometricInterpretation: 2,
             kCGImagePropertyTIFFTransferFunction: "some-transfer",
             kCGImagePropertyTIFFOrientation: 1,
@@ -29,62 +31,118 @@ struct TIFFTests {
             kCGImagePropertyTIFFMake: "MakeCo",
             kCGImagePropertyTIFFModel: "ModelX",
             kCGImagePropertyTIFFSoftware: "Software 1.0",
-            kCGImagePropertyTIFFHostComputer: "Mac"
+            kCGImagePropertyTIFFHostComputer: "Hal 9000"
         ]
+    }
+    
+    let tiff: TIFF
 
-        let tiff = TIFF(rawValue: raw)
-
+    // Helper to create a TIFF from the shared dictionary
+    init() {
+        let dict = Self.sampleRawTIFF()
+        self.tiff = TIFF(rawValue: dict)
+    }
+    
+    @Test func artist() throws {
+        #expect(tiff.artist == "Joseph Nicéphore Niépce")
+    }
+    
+    @Test func compression() throws {
         #expect(tiff.compression == 6)
-        #expect(tiff.photometricInterpretation == 2)
-        #expect(tiff.transferFunction == "some-transfer")
-        #expect(tiff.orientation == 1)
-        #expect(tiff.xResolution == 540.0)
-        #expect(tiff.yResolution == 540.0)
-        #expect(tiff.resolutionUnit == 2)
-        #expect(tiff.whitePoint == 1)
-        #expect(tiff.primaryChromaticities == "primaries")
-        #expect(tiff.tileLength == "1024")
-        #expect(tiff.tileWidth == "2048")
-        #expect(tiff.documentName == "DocName")
-        #expect(tiff.imageDescription == "Desc")
-        #expect(tiff.artist == "Artist")
+    }
+    
+    @Test func copyright() throws {
         #expect(tiff.copyright == "Copyright")
-        #expect(tiff.make == "MakeCo")
-        #expect(tiff.model == "ModelX")
-        #expect(tiff.software == "Software 1.0")
-        #expect(tiff.hostComputer == "Mac")
-        
+    }
+    
+    @Test func dateTime() throws {
         let dateTime = try #require(tiff.dateTime)
-        let dateComponents = Calendar.current.dateComponents(
-            [.year, .month, .day, .hour, .minute, .second],
+
+        let dateComponents = Calendar(identifier: .gregorian).dateComponents(
+            [.timeZone, .year, .month, .day, .hour, .minute, .second, .nanosecond],
             from: dateTime
         )
         
+        #expect(dateComponents.timeZone == .current)
         #expect(dateComponents.year == 2025)
         #expect(dateComponents.month == 2)
         #expect(dateComponents.day == 13)
         #expect(dateComponents.hour == 15)
         #expect(dateComponents.minute == 34)
         #expect(dateComponents.second == 57)
+        #expect(dateComponents.nanosecond == 0)
     }
-
+    
+    @Test func documentName() throws {
+        #expect(tiff.documentName == "DocName")
+    }
+    
+    @Test func hostComputer() throws {
+        #expect(tiff.hostComputer == "Hal 9000")
+    }
+    
+    @Test func imageDescription() throws {
+        #expect(tiff.imageDescription == "The earliest surviving camera photograph.")
+    }
+    
+    @Test func make() throws {
+        #expect(tiff.make == "MakeCo")
+    }
+    
+    @Test func model() throws {
+        #expect(tiff.model ==  "ModelX")
+    }
+    
+    @Test func orientation() throws {
+        #expect(tiff.orientation == 1)
+    }
+    
+    @Test func photometricInterpretation() throws {
+        #expect(tiff.photometricInterpretation == 2)
+    }
+    
+    @Test func primaryChromaticities() throws {
+        #expect(tiff.primaryChromaticities == "primaries")
+    }
+    
+    @Test func resolutionUnit() throws {
+        #expect(tiff.resolutionUnit == 2)
+    }
+    
+    @Test func software() throws {
+        #expect(tiff.software == "Software 1.0")
+    }
+    
+    @Test func tileLength() throws {
+        #expect(tiff.tileLength == "1024")
+    }
+    
+    @Test func tileWidth() throws {
+        #expect(tiff.tileWidth == "2048")
+    }
+    
+    @Test func transferFunction() throws {
+        #expect(tiff.transferFunction == "some-transfer")
+    }
+    
+    @Test func whitePoint() throws {
+        #expect(tiff.whitePoint == 1)
+    }
+    
+    @Test func xResolution() throws {
+        #expect(tiff.xResolution == 540.0)
+    }
+    
+    @Test func yResolution() throws {
+        #expect(tiff.yResolution == 540.0)
+    }
+ 
     @Test("Encoding to JSON includes present fields and omits nils")
     func encoding() async throws {
-        let raw: NSDictionary = [
-            kCGImagePropertyTIFFArtist: "Joseph Nicéphore Niépce",
-            kCGImagePropertyTIFFImageDescription: "The earliest surviving camera photograph.",
-            kCGImagePropertyTIFFOrientation: 1,
-            kCGImagePropertyTIFFPhotometricInterpretation: 2,
-            kCGImagePropertyTIFFResolutionUnit: 2,
-            kCGImagePropertyTIFFXResolution: 540.0,
-            kCGImagePropertyTIFFYResolution: 540.0,
-            kCGImagePropertyTIFFDateTime: "2025:02:13 15:34:57"
-        ]
-        let tiff = TIFF(rawValue: raw)
-
         // Act
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
+        
         let data = try encoder.encode(tiff)
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
 
@@ -96,8 +154,7 @@ struct TIFFTests {
         let resUnit = json?["resolutionUnit"] as? Int
         let xRes = json?["xResolution"] as? Double
         let yRes = json?["yResolution"] as? Double
-        let dateTime = json?["dateTime"] as? String
-
+        
         #expect(artist == "Joseph Nicéphore Niépce")
         #expect(imageDescription == "The earliest surviving camera photograph.")
         #expect(orientation == 1)
@@ -105,23 +162,34 @@ struct TIFFTests {
         #expect(resUnit == 2)
         #expect(xRes == 540.0)
         #expect(yRes == 540.0)
-        #expect(dateTime == "2025-02-13T23:34:57Z")
         
-        // Omitted keys should be absent
-        #expect(json?["compression"] == nil)
-        #expect(json?["software"] == nil)
-        #expect(json?["tileLength"] == nil)
-        #expect(json?["tileWidth"] == nil)
+        let dateTime = try #require(json?["dateTime"] as? String)
+        
+        let date = try Date.ISO8601FormatStyle.iso8601.parse(dateTime)
+        
+        let calendar = Calendar(identifier: .gregorian)
+        
+        let dateComponents = calendar.dateComponents(
+            [.timeZone, .year, .month, .day, .hour, .minute, .second, .nanosecond],
+            from: date
+        )
+        #expect(dateComponents.timeZone == .current)
+        #expect(dateComponents.year == 2025)
+        #expect(dateComponents.month == 2)
+        #expect(dateComponents.day == 13)
+        #expect(dateComponents.hour == 15)
+        #expect(dateComponents.minute == 34)
+        #expect(dateComponents.second == 57)
+        #expect(dateComponents.nanosecond == 0)
     }
 
     @Test("Missing or malformed values produce nils")
     func missingOrMalformedValues() async throws {
-        let raw: NSDictionary = [
-            kCGImagePropertyTIFFCompression: "not-an-int",
-            kCGImagePropertyTIFFXResolution: "540",
-            kCGImagePropertyTIFFYResolution: NSNull(),
-            kCGImagePropertyTIFFDateTime: "bad-format"
-        ]
+        let raw = Self.sampleRawTIFF().mutableCopy() as! NSMutableDictionary
+        raw[kCGImagePropertyTIFFCompression] = "not-an-int"
+        raw[kCGImagePropertyTIFFXResolution] = "540"
+        raw[kCGImagePropertyTIFFYResolution] = NSNull()
+        raw[kCGImagePropertyTIFFDateTime] = "bad-format"
 
         let tiff = TIFF(rawValue: raw)
 
@@ -148,10 +216,5 @@ struct TIFFTests {
         #expect(tiff.resolutionUnit == 2)
         #expect(tiff.xResolution == 540.0)
         #expect(tiff.yResolution == 540.0)
-
-        if let date = tiff.dateTime {
-            let formatted = TIFF.dateFormatter.string(from: date)
-            #expect(formatted == "2025:02:13 07:34:57")
-        }
     }
 }

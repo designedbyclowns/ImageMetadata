@@ -1,3 +1,5 @@
+import Foundation
+
 extension TIFF: Encodable {
     enum CodingKeys: String, CodingKey {
         case artist

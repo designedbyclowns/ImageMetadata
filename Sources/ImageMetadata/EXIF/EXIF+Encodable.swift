@@ -1,3 +1,5 @@
+import Foundation
+
 extension EXIF: Encodable {
     enum CodingKeys: String, CodingKey {
         case apertureValue
@@ -98,8 +100,8 @@ extension EXIF: Encodable {
         try container.encodeIfPresent(compressedBitsPerPixel, forKey: .compressedBitsPerPixel)
         try container.encodeIfPresent(contrast?.description, forKey: .contrast)
         try container.encodeIfPresent(customRendered?.description, forKey: .customRendered)
-        try container.encodeIfPresent(dateTimeDigitized, forKey: .dateTimeDigitized)
-        try container.encodeIfPresent(dateTimeOriginal, forKey: .dateTimeOriginal)
+        try container.encodeIfPresent(dateTimeDigitizedString, forKey: .dateTimeDigitized)
+        try container.encodeIfPresent(dateTimeOriginalString, forKey: .dateTimeOriginal)
         try container.encodeIfPresent(deviceSettingDescription, forKey: .deviceSettingDescription)
         try container.encodeIfPresent(digitalZoomRatio, forKey: .digitalZoomRatio)
         try container.encodeIfPresent(exposureBiasValue, forKey: .exposureBiasValue)
@@ -169,5 +171,20 @@ extension EXIF: Encodable {
         try container.encodeIfPresent(userComment, forKey: .userComment)
         try container.encodeIfPresent(version, forKey: .version)
         try container.encodeIfPresent(whiteBalance?.description, forKey: .whiteBalance)
+    }
+    
+    var dateTimeDigitizedString: String? {
+        guard let dateTimeDigitized = self.dateTimeDigitized else { return nil }
+        return formattedDate(dateTimeDigitized, timeZone: self.timeZoneDigitized)
+    }
+    
+    var dateTimeOriginalString: String? {
+        guard let dateTimeOriginal = self.dateTimeOriginal else { return nil }
+        return formattedDate(dateTimeOriginal, timeZone: self.timeZoneOriginal)
+    }
+    
+    private func formattedDate(_ date: Date, timeZone: TimeZone?) -> String {
+        let style = Date.ISO8601FormatStyle(includingFractionalSeconds: true, timeZone: self.timeZoneOriginal ?? .gmt)
+        return style.format(date)
     }
 }
