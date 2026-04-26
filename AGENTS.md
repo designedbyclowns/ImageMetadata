@@ -7,7 +7,7 @@ Guidance for AI coding agents working in this repository.
 Swift Package providing the `ImageMetadata` library and the `imgmd` macOS CLI. It reads (read-only) image metadata via Apple's ImageIO framework, so supported formats and tags are constrained to what ImageIO exposes.
 
 - swift-tools-version: 6.2
-- Platforms: macOS 14, iOS 17, watchOS 10, tvOS 17
+- Platforms: macOS 15, iOS 18, watchOS 11, tvOS 18
 - Default localization: en-US
 - Upcoming feature `InternalImportsByDefault` is enabled package-wide (see the loop at the bottom of `Package.swift`). This means `import Foo` is internal by default — use `public import` in source files when a type from the imported module appears in a public API.
 
@@ -37,19 +37,19 @@ The `ImageMetadata` target wraps the dictionary-based output of `CGImageSourceCo
 
 1. `ImageFile` validates a file URL (security-scoped access, content-type check against `.image`, file size).
 2. `ImageMetadata.init(url:options:)` → `init(imageFile:)` → `init(imageSource:)` → `init(rawValue: NSDictionary, options:)`. The `rawValue` initializer is the single ingestion point that pulls properties out of the ImageIO dictionary using `kCGImageProperty*` keys.
-3. Sub-dictionaries (`kCGImagePropertyExifDictionary`, `IPTCDictionary`, `TIFFDictionary`, `GPSDictionary`) are decoded into `EXIF`, `IPTC`, `TIFF`, `GPS` structs only when the matching `MetadataOptions` flag is set.
+3. Sub-dictionaries (`kCGImagePropertyExifDictionary`, `IPTCDictionary`, `TIFFDictionary`, `GPSDictionary`, `DNGDictionary`) are decoded into `EXIF`, `IPTC`, `TIFF`, `GPS`, `DNG` structs only when the matching `MetadataOptions` flag is set.
 
-`MetadataOptions` is an `OptionSet` (`.exif`, `.iptc`, `.tiff`, `.gps`, `.all`, `.none`) that gates which sub-metadata blocks are populated. The CLI re-maps its `--exif/--no-exif` style flags onto this option set.
+`MetadataOptions` is an `OptionSet` (`.exif`, `.iptc`, `.tiff`, `.gps`, `.dng`, `.all`, `.none`) that gates which sub-metadata blocks are populated. The CLI re-maps its `--exif/--no-exif` style flags onto this option set.
 
 ### The `Metadata` protocol
 
-Every public metadata type (`ImageMetadata`, `ImageFile`, `EXIF`, `IPTC`, `TIFF`, `GPS`) conforms to `Metadata: Encodable & CustomStringConvertible & Sendable`. The protocol's default `description` JSON-encodes `self` with `.iso8601` dates, sorted keys, and pretty printing — that's what `imgmd` ultimately prints. Encoding behavior for each type is customized in dedicated `*+Encodable.swift` files; treat those as the source of truth for the JSON shape, not the stored properties.
+Every public metadata type (`ImageMetadata`, `ImageFile`, `EXIF`, `IPTC`, `TIFF`, `GPS`, `DNG`) conforms to `Metadata: Encodable & CustomStringConvertible & Sendable`. The protocol's default `description` JSON-encodes `self` with `.iso8601` dates, sorted keys, and pretty printing — that's what `imgmd` ultimately prints. Encoding behavior for each type is customized in dedicated `*+Encodable.swift` files; treat those as the source of truth for the JSON shape, not the stored properties. `DNG`'s encoder is intentionally lossy: large binary blobs (`originalRawFileData`, ICC profiles, opcode lists, `privateData`) and the linearization table are emitted as integer byte/entry counts rather than their raw bytes.
 
 ### Sub-metadata structure
 
 Each metadata family lives in its own folder and follows the same pattern:
 
-- `EXIF/`, `IPTC/`, `TIFF/`, `GPS/` — one struct per family plus an `*+Encodable.swift` and any enum types modeling EXIF's integer-coded fields (`ExposureMode`, `WhiteBalance`, `SceneCaptureType`, `LightSource`, etc., each `RawRepresentable<Int>`).
+- `EXIF/`, `IPTC/`, `TIFF/`, `GPS/`, `DNG/` — one struct per family plus an `*+Encodable.swift` and any enum types modeling EXIF's integer-coded fields (`ExposureMode`, `WhiteBalance`, `SceneCaptureType`, `LightSource`, etc., each `RawRepresentable<Int>`).
 - `GPS/GPS+CoreLocation.swift` provides interop with `CoreLocation`.
 - `Extensions/Calendar.swift`, `Extensions/TimeZone.swift` — date parsing helpers used to assemble `Date` values from EXIF's split `DateTime* + SubsecTime* + OffsetTime*` fields. Date assembly is subtle (see prior commit history around date parsing); when changing it, run `EXIFTests` and the root-level `CalendarTests.swift` to catch regressions.
 
@@ -62,6 +62,7 @@ Each metadata family lives in its own folder and follows the same pattern:
 `Sources/imgmd/imgmd.swift` is a single `ParsableCommand`. The flag-to-option mapping lives in `run()`:
 - `--basic` forces `MetadataOptions.none`.
 - If no metadata flag is set, defaults to `.all`.
+- For each input file the CLI also auto-adds `.dng` to that file's options when its UTI conforms to `UTType.dng` (looked up via `URL.resourceValues(forKeys: [.contentTypeKey])`). `--basic` suppresses this auto-include.
 - `--debug` short-circuits to printing the raw ImageIO dictionary via `ImageMetadata.getProperties(url:)`.
 
 ## Tests

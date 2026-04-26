@@ -20,6 +20,7 @@ extension ImageMetadata: Encodable {
         case iptc
         case tiff
         case gps
+        case dng
         case imageFile = "file"
     }
     
@@ -56,7 +57,11 @@ extension ImageMetadata: Encodable {
         if options.contains(.gps) {
             try container.encodeIfPresent(gps, forKey: .gps)
         }
-                
+
+        if options.contains(.dng) {
+            try container.encodeIfPresent(dng, forKey: .dng)
+        }
+
         if let imageFile {
             var fileContainer = encoder.container(keyedBy: ImageFile.CodingKeys.self)
             try fileContainer.encodeIfPresent(imageFile.filename, forKey: .filename)
