@@ -132,11 +132,11 @@ struct DNGTests {
     // MARK: - Identification
 
     @Test func version() {
-        #expect(dng.version == [1, 4, 0, 0])
+        #expect(dng.version == "1.4.0.0")
     }
 
     @Test func backwardVersion() {
-        #expect(dng.backwardVersion == [1, 1, 0, 0])
+        #expect(dng.backwardVersion == "1.1.0.0")
     }
 
     @Test func uniqueCameraModel() {
@@ -452,7 +452,7 @@ struct DNGTests {
         #expect(json["baselineExposure"] as? Double == 0.25)
         #expect(json["calibrationIlluminant1"] as? Int == 17)
         #expect(json["lensInfo"] as? [Double] == [24.0, 70.0, 2.8, 2.8])
-        #expect(json["version"] as? [Int] == [1, 4, 0, 0])
+        #expect(json["version"] as? String == "1.4.0.0")
 
         let previewDate = try #require(json["previewDateTime"] as? String)
         #expect(previewDate.hasPrefix("2025-02-13T15:34:57"))

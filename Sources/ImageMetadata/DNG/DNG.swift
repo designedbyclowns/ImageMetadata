@@ -9,11 +9,11 @@ public struct DNG: Metadata {
 
     // MARK: - Identification & versioning
 
-    /// The DNG specification version this file was written against. Four bytes (e.g. `[1, 4, 0, 0]`).
-    public let version: [Int]?
+    /// The DNG specification version this file was written against (e.g. `"1.4.0.0"`).
+    public let version: String?
 
     /// The oldest DNG specification version a reader needs to understand to render this file.
-    public let backwardVersion: [Int]?
+    public let backwardVersion: String?
 
     /// A unique, non-localized identifier for the camera model that produced this image.
     public let uniqueCameraModel: String?
@@ -308,8 +308,8 @@ public struct DNG: Metadata {
     // MARK: - Initialization
 
     public init(rawValue: NSDictionary) {
-        self.version = Self.intArray(rawValue[kCGImagePropertyDNGVersion])
-        self.backwardVersion = Self.intArray(rawValue[kCGImagePropertyDNGBackwardVersion])
+        self.version = Self.versionString(rawValue[kCGImagePropertyDNGVersion])
+        self.backwardVersion = Self.versionString(rawValue[kCGImagePropertyDNGBackwardVersion])
         self.uniqueCameraModel = rawValue[kCGImagePropertyDNGUniqueCameraModel] as? String
         self.localizedCameraModel = rawValue[kCGImagePropertyDNGLocalizedCameraModel] as? String
         self.cameraSerialNumber = rawValue[kCGImagePropertyDNGCameraSerialNumber] as? String
@@ -445,5 +445,10 @@ public struct DNG: Metadata {
     private static func describe(_ value: Any?) -> String? {
         guard let value, !(value is NSNull) else { return nil }
         return String(describing: value)
+    }
+
+    private static func versionString(_ value: Any?) -> String? {
+        guard let components = value as? [CustomStringConvertible] else { return nil }
+        return components.map { String(describing: $0) }.joined(separator: ".")
     }
 }
