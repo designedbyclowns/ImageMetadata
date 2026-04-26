@@ -71,17 +71,18 @@ OVERVIEW: Outputs metadata from the supplied image files as JSON.
 All metadata is output by default. Use the options to limit what metadata is
 displayed.
 
-USAGE: imgmd [--basic] [--exif] [--no-exif] [--gps] [--no-gps] [--iptc] [--no-iptc] [--tiff] [--no-tiff] [--debug] [<files> ...]
+USAGE: imgmd [<options>] [<files> ...]
 
 ARGUMENTS:
   <files>                 Image files.
 
 OPTIONS:
   -b, --basic             Basic. Don't include other metadata.
-  -e, --exif/--no-exif    Include EXIF metadata. (default: --exif)
-  -g, --gps/--no-gps      Include GPS metadata. (default: --gps)
-  -i, --iptc/--no-iptc    Include IPTC metadata. (default: --iptc)
-  -t, --tiff/--no-tiff    Include TIFF metadata. (default: --tiff)
+  -e, --exif/--no-exif    Include EXIF metadata. (default: --no-exif)
+  -g, --gps/--no-gps      Include GPS metadata. (default: --no-gps)
+  -i, --iptc/--no-iptc    Include IPTC metadata. (default: --no-iptc)
+  -t, --tiff/--no-tiff    Include TIFF metadata. (default: --no-tiff)
+  --dng/--no-dng          Include DNG metadata. (default: --no-dng)
   -d, --debug             Show the raw metadata.
   -h, --help              Show help information.
 

@@ -14,8 +14,10 @@ public struct MetadataOptions: OptionSet, Sendable {
     public static let tiff = MetadataOptions(rawValue: 1 << 2)
     /// Include GPS Metadata.
     public static let gps  = MetadataOptions(rawValue: 1 << 3)
+    /// Include DNG Metadata.
+    public static let dng  = MetadataOptions(rawValue: 1 << 4)
     /// Don't include any additional metadata types.
     public static let none: MetadataOptions = []
     /// Include all known metadata types.
-    public static let all: MetadataOptions = [.exif, .iptc, .tiff, .gps]
+    public static let all: MetadataOptions = [.exif, .iptc, .tiff, .gps, .dng]
 }
