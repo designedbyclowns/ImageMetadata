@@ -53,95 +53,99 @@ struct imgmdTests {
         #expect(fileSize == "2.1 MB (2,240,988 bytes)")
     }
     
-    @Test func exifOption() async throws {
-        let json = try await perform(options: ["--exif"])
+    @Test("--no-iptc --no-tiff --no-gps yields only EXIF metadata")
+    func exifOnly() async throws {
+        let json = try await perform(options: ["--no-iptc", "--no-tiff", "--no-gps"])
 
         #expect(json["iptc"] == nil)
         #expect(json["tiff"] == nil)
         #expect(json["gps"] == nil)
-        
+
         let exif = try #require(json["exif"] as? [String: Any])
         #expect(JSONSerialization.isValidJSONObject(exif) == true)
-        
+
         let dateTimeOriginal = try #require(exif["dateTimeOriginal"] as? String)
-        
+
         #expect(dateTimeOriginal == "1826-06-01T12:00:00.199+0200")
-        
+
         let offsetTimeOriginal = try #require(exif["offsetTimeOriginal"] as? String)
         #expect(offsetTimeOriginal == "+02:00")
     }
-    
-    @Test func iptcOption() async throws {
-        let json = try await perform(options: ["--iptc"])
-        
+
+    @Test("--no-exif --no-tiff --no-gps yields only IPTC metadata")
+    func iptcOnly() async throws {
+        let json = try await perform(options: ["--no-exif", "--no-tiff", "--no-gps"])
+
         #expect(json["exif"] == nil)
         #expect(json["tiff"] == nil)
         #expect(json["gps"] == nil)
-        
+
         let iptc = try #require(json["iptc"] as? [String: Any])
         #expect(JSONSerialization.isValidJSONObject(iptc) == true)
-        
+
         let byline = try #require(iptc["byline"] as? [String])
         #expect(byline.first == "Joseph Nicéphore Niépce")
-        
+
         let captionAbstract = try #require(iptc["captionAbstract"] as? String)
         #expect(captionAbstract == "The earliest surviving camera photograph.")
-        
+
         let city = try #require(iptc["city"] as? String)
         #expect(city == "Saint-Loup-de-Varennes")
-        
+
         let copyrightNotice = try #require(iptc["copyrightNotice"] as? String)
         #expect(copyrightNotice == "Public Domain")
-        
+
         let country = try #require(iptc["country"] as? String)
         #expect(country == "France")
-        
+
         let headline = try #require(iptc["headline"] as? String)
         #expect(headline == "View from the Window at Le Gras")
     }
-    
-    @Test func tiffOption() async throws {
-        let json = try await perform(options: ["--tiff"])
-        
+
+    @Test("--no-exif --no-iptc --no-gps yields only TIFF metadata")
+    func tiffOnly() async throws {
+        let json = try await perform(options: ["--no-exif", "--no-iptc", "--no-gps"])
+
         #expect(json["exif"] == nil)
         #expect(json["iptc"] == nil)
         #expect(json["gps"] == nil)
-        
+
         let tiff = try #require(json["tiff"] as? [String: Any])
         #expect(JSONSerialization.isValidJSONObject(tiff) == true)
-        
+
         let artist = try #require(tiff["artist"] as? String)
         #expect(artist == "Joseph Nicéphore Niépce")
-        
+
         let copyright = try #require(tiff["copyright"] as? String)
         #expect(copyright == "Public Domain")
-        
+
         let imageDescription = try #require(tiff["imageDescription"] as? String)
         #expect(imageDescription == "The earliest surviving camera photograph.")
     }
-    
-    @Test func gpsOption() async throws {
-        let json = try await perform(options: ["--gps"])
-        
+
+    @Test("--no-exif --no-iptc --no-tiff yields only GPS metadata")
+    func gpsOnly() async throws {
+        let json = try await perform(options: ["--no-exif", "--no-iptc", "--no-tiff"])
+
         #expect(json["exif"] == nil)
         #expect(json["iptc"] == nil)
         #expect(json["tiff"] == nil)
-        
+
         let gps = try #require(json["gps"] as? [String: Any])
         #expect(JSONSerialization.isValidJSONObject(gps) == true)
-        
+
         let latitude = try #require(gps["latitude"] as? Double)
         #expect(latitude == 46.72519666666667)
-        
+
         let longitude = try #require(gps["longitude"] as? Double)
         #expect(longitude == -4.860291666666667)
-        
+
         let latitudeReference = try #require(gps["latitudeReference"] as? String)
         #expect(latitudeReference == "N")
-        
+
         let longitudeReference = try #require(gps["longitudeReference"] as? String)
         #expect(longitudeReference == "E")
-        
+
         let dateTime = try #require(gps["dateTime"] as? String)
         #expect(dateTime == "2025-02-13T15:02:45Z")
     }
