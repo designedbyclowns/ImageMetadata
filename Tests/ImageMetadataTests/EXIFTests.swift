@@ -547,14 +547,12 @@ struct EXIFTests {
     }
 
     @Test func auxiliaryDictionary_lensModelAndSerialNumberFromAux() {
-        let dict: NSDictionary = [
-            kCGImagePropertyExifAuxDictionary as String: [
-                kCGImagePropertyExifAuxLensModel as String: "AUX Lens Model",
-                kCGImagePropertyExifAuxLensSerialNumber as String: "AUX12345"
-            ] as NSDictionary
+        let aux: NSDictionary = [
+            kCGImagePropertyExifAuxLensModel as String: "AUX Lens Model",
+            kCGImagePropertyExifAuxLensSerialNumber as String: "AUX12345"
         ]
-        let exif = EXIF(rawValue: dict)
-        
+        let exif = EXIF(rawValue: [:], aux: aux)
+
         #expect(exif.lensModel == "AUX Lens Model")
         #expect(exif.lensSerialNumber == "AUX12345")
     }
@@ -565,7 +563,7 @@ struct EXIFTests {
             kCGImagePropertyExifLensSerialNumber as String: "MAIN67890"
         ]
         let exif = EXIF(rawValue: dict)
-        
+
         #expect(exif.lensModel == "Main Lens Model")
         #expect(exif.lensSerialNumber == "MAIN67890")
     }
@@ -573,29 +571,27 @@ struct EXIFTests {
     @Test func auxiliaryDictionary_auxTakesPrecedenceOverMain() {
         let dict: NSDictionary = [
             kCGImagePropertyExifLensModel as String: "Main Lens Model",
-            kCGImagePropertyExifAuxDictionary as String: [
-                kCGImagePropertyExifAuxLensModel as String: "AUX Lens Model"
-            ] as NSDictionary
         ]
-        let exif = EXIF(rawValue: dict)
-        
+        let aux: NSDictionary = [
+            kCGImagePropertyExifAuxLensModel as String: "AUX Lens Model"
+        ]
+        let exif = EXIF(rawValue: dict, aux: aux)
+
         #expect(exif.lensModel == "AUX Lens Model")
     }
 
     @Test func auxiliaryDictionary_allAuxProperties() {
-        let dict: NSDictionary = [
-            kCGImagePropertyExifAuxDictionary as String: [
-                kCGImagePropertyExifAuxFirmware as String: "v1.2.3",
-                kCGImagePropertyExifAuxFlashCompensation as String: "+0.5",
-                kCGImagePropertyExifAuxImageNumber as String: "IMG_1234",
-                kCGImagePropertyExifAuxLensID as String: "LENS001",
-                kCGImagePropertyExifAuxLensInfo as String: "24-70mm f/2.8",
-                kCGImagePropertyExifAuxOwnerName as String: "John Doe",
-                kCGImagePropertyExifAuxSerialNumber as String: "SN123456"
-            ] as NSDictionary
+        let aux: NSDictionary = [
+            kCGImagePropertyExifAuxFirmware as String: "v1.2.3",
+            kCGImagePropertyExifAuxFlashCompensation as String: "+0.5",
+            kCGImagePropertyExifAuxImageNumber as String: "IMG_1234",
+            kCGImagePropertyExifAuxLensID as String: "LENS001",
+            kCGImagePropertyExifAuxLensInfo as String: "24-70mm f/2.8",
+            kCGImagePropertyExifAuxOwnerName as String: "John Doe",
+            kCGImagePropertyExifAuxSerialNumber as String: "SN123456"
         ]
-        let exif = EXIF(rawValue: dict)
-        
+        let exif = EXIF(rawValue: [:], aux: aux)
+
         #expect(exif.firmware == "v1.2.3")
         #expect(exif.flashCompensation == "+0.5")
         #expect(exif.imageNumber == "IMG_1234")
