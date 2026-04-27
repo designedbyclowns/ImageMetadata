@@ -4,7 +4,7 @@ import ImageMetadata
 import UniformTypeIdentifiers
 
 fileprivate enum MetadataType: String, EnumerableFlag {
-    case exif, iptc, tiff, gps, dng, png, gif, eightBIM, heic, jfif
+    case exif, iptc, tiff, gps, dng, png, gif, eightBIM, heic, jfif, webP
 }
 
 fileprivate extension MetadataType {
@@ -30,6 +30,8 @@ fileprivate extension MetadataType {
             return .heic
         case .jfif:
             return .jfif
+        case .webP:
+            return .webP
         }
     }
 }
@@ -78,6 +80,9 @@ struct imgmd: ParsableCommand {
     @Flag(name: .long, inversion: .prefixedNo, help: "Include JFIF metadata.")
     var jfif: Bool = false
 
+    @Flag(name: .customLong("webp"), inversion: .prefixedNo, help: "Include WebP metadata.")
+    var webP: Bool = false
+
     @Flag(name: .shortAndLong, help: "Show the raw metadata.")
     var debug: Bool = false
     
@@ -116,6 +121,7 @@ struct imgmd: ParsableCommand {
         if eightBIM { metadataOptions.insert(.eightBIM) }
         if heic { metadataOptions.insert(.heic) }
         if jfif { metadataOptions.insert(.jfif) }
+        if webP { metadataOptions.insert(.webP) }
 
         if basic {
             metadataOptions = MetadataOptions.none
@@ -143,6 +149,9 @@ struct imgmd: ParsableCommand {
                 }
                 if Self.conforms(url: url, to: .jpeg) {
                     options.insert(.jfif)
+                }
+                if Self.conforms(url: url, to: .webP) {
+                    options.insert(.webP)
                 }
             }
             return try ImageMetadata(url: url, options: options)

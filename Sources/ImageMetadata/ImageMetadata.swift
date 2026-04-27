@@ -86,6 +86,9 @@ public struct ImageMetadata: Metadata {
     /// Metadata for the JPEG File Interchange Format (JFIF) container.
     public let jfif: JFIF?
 
+    /// Metadata for the WebP image format.
+    public let webP: WebP?
+
     public private(set) var imageFile: ImageFile?
     
 
@@ -188,6 +191,12 @@ public struct ImageMetadata: Metadata {
             self.jfif = JFIF(rawValue: jfifDictionary)
         } else {
             self.jfif = nil
+        }
+
+        if options.contains(.webP), let webPDictionary = rawValue[kCGImagePropertyWebPDictionary] as? NSDictionary {
+            self.webP = WebP(rawValue: webPDictionary)
+        } else {
+            self.webP = nil
         }
 
         // Defaults that may be updated in other initializers

@@ -31,6 +31,7 @@ See <doc:Usage>.
 - ``EightBIM``
 - ``HEIC``
 - ``JFIF``
+- ``WebP``
 
 ### Creating an `ImageMetadata` type.
 
