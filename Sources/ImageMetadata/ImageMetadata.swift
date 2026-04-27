@@ -73,6 +73,9 @@ public struct ImageMetadata: Metadata {
     /// Metadata for an image that uses Portable Network Graphics (PNG) format.
     public let png: PNG?
 
+    /// Metadata for an image that uses Graphics Interchange Format (GIF).
+    public let gif: GIF?
+
     public private(set) var imageFile: ImageFile?
     
 
@@ -150,6 +153,12 @@ public struct ImageMetadata: Metadata {
             self.png = PNG(rawValue: pngDictionary)
         } else {
             self.png = nil
+        }
+
+        if options.contains(.gif), let gifDictionary = rawValue[kCGImagePropertyGIFDictionary] as? NSDictionary {
+            self.gif = GIF(rawValue: gifDictionary)
+        } else {
+            self.gif = nil
         }
 
         // Defaults that may be updated in other initializers

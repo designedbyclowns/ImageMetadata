@@ -18,8 +18,10 @@ public struct MetadataOptions: OptionSet, Sendable {
     public static let dng  = MetadataOptions(rawValue: 1 << 4)
     /// Include PNG Metadata.
     public static let png  = MetadataOptions(rawValue: 1 << 5)
+    /// Include GIF Metadata.
+    public static let gif  = MetadataOptions(rawValue: 1 << 6)
     /// Don't include any additional metadata types.
     public static let none: MetadataOptions = []
     /// Include all known metadata types.
-    public static let all: MetadataOptions = [.exif, .iptc, .tiff, .gps, .dng, .png]
+    public static let all: MetadataOptions = [.exif, .iptc, .tiff, .gps, .dng, .png, .gif]
 }

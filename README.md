@@ -84,6 +84,7 @@ OPTIONS:
   -t, --tiff/--no-tiff    Include TIFF metadata. (default: --no-tiff)
   --dng/--no-dng          Include DNG metadata. (default: --no-dng)
   -p, --png/--no-png      Include PNG metadata. (default: --no-png)
+  --gif/--no-gif          Include GIF metadata. (default: --no-gif)
   -d, --debug             Show the raw metadata.
   -h, --help              Show help information.
 
