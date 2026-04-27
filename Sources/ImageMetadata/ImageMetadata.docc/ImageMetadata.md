@@ -28,6 +28,7 @@ See <doc:Usage>.
 - ``DNG``
 - ``PNG``
 - ``GIF``
+- ``EightBIM``
 
 ### Creating an `ImageMetadata` type.
 

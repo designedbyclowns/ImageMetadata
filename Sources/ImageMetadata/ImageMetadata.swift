@@ -76,6 +76,10 @@ public struct ImageMetadata: Metadata {
     /// Metadata for an image that uses Graphics Interchange Format (GIF).
     public let gif: GIF?
 
+    /// 8BIM (Photoshop image resource block) metadata. Often present in
+    /// PSD files but also embedded in JPEGs and TIFFs touched by Photoshop.
+    public let eightBIM: EightBIM?
+
     public private(set) var imageFile: ImageFile?
     
 
@@ -159,6 +163,12 @@ public struct ImageMetadata: Metadata {
             self.gif = GIF(rawValue: gifDictionary)
         } else {
             self.gif = nil
+        }
+
+        if options.contains(.eightBIM), let eightBIMDictionary = rawValue[kCGImageProperty8BIMDictionary] as? NSDictionary {
+            self.eightBIM = EightBIM(rawValue: eightBIMDictionary)
+        } else {
+            self.eightBIM = nil
         }
 
         // Defaults that may be updated in other initializers
