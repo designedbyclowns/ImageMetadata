@@ -127,7 +127,8 @@ public struct ImageMetadata: Metadata {
         self.pixelWidth = rawValue[kCGImagePropertyPixelWidth] as? Int
                 
         if options.contains(.exif), let exifDictionary = rawValue[kCGImagePropertyExifDictionary] as? NSDictionary {
-            self.exif = EXIF(rawValue: exifDictionary)
+            let auxDictionary = rawValue[kCGImagePropertyExifAuxDictionary] as? NSDictionary
+            self.exif = EXIF(rawValue: exifDictionary, aux: auxDictionary)
         } else {
             self.exif = nil
         }

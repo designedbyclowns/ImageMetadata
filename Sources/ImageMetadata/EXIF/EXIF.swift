@@ -304,7 +304,7 @@ public struct EXIF: Metadata {
     /// The white balance mode.
     public let whiteBalance: EXIF.WhiteBalance?
     
-    public init(rawValue: NSDictionary) {
+    public init(rawValue: NSDictionary, aux: NSDictionary? = nil) {
         self.apertureValue = rawValue[kCGImagePropertyExifApertureValue] as? Double
         self.bodySerialNumber = rawValue[kCGImagePropertyExifBodySerialNumber] as? String
         self.brightnessValue = rawValue[kCGImagePropertyExifBrightnessValue] as? Double
@@ -463,10 +463,10 @@ public struct EXIF: Metadata {
         self.whiteBalance = (rawValue[kCGImagePropertyExifWhiteBalance] as? Int)
             .map({ EXIF.WhiteBalance(rawValue: $0) }) ?? nil
         
-        // Auxiliary (ExifAux) fields
-        
-        let aux = rawValue[kCGImagePropertyExifAuxDictionary] as? NSDictionary
-        
+        // Auxiliary (ExifAux) fields. The ExifAux dictionary lives at the
+        // top level alongside the EXIF dictionary, not nested inside it, so
+        // it must be passed in separately.
+
         self.firmware = aux?[kCGImagePropertyExifAuxFirmware] as? String
         self.flashCompensation = aux?[kCGImagePropertyExifAuxFlashCompensation] as? String
         self.imageNumber = aux?[kCGImagePropertyExifAuxImageNumber] as? String
