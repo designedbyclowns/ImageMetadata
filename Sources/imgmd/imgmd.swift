@@ -101,8 +101,13 @@ struct imgmd: ParsableCommand {
 
         let imagesMetadata = try files.map { url -> ImageMetadata in
             var options = metadataOptions
-            if !basic, Self.isDNG(url: url) {
-                options.insert(.dng)
+            if !basic {
+                if Self.conforms(url: url, to: .dng) {
+                    options.insert(.dng)
+                }
+                if Self.conforms(url: url, to: .png) {
+                    options.insert(.png)
+                }
             }
             return try ImageMetadata(url: url, options: options)
         }
@@ -124,11 +129,11 @@ struct imgmd: ParsableCommand {
         print(String(decoding: json, as: UTF8.self))
     }
 
-    private static func isDNG(url: URL) -> Bool {
+    private static func conforms(url: URL, to target: UTType) -> Bool {
         guard let values = try? url.resourceValues(forKeys: [.contentTypeKey]),
               let type = values.contentType else {
             return false
         }
-        return type.conforms(to: .dng)
+        return type.conforms(to: target)
     }
 }
