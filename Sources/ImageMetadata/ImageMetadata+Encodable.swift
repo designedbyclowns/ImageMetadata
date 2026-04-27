@@ -25,6 +25,7 @@ extension ImageMetadata: Encodable {
         case gif
         case eightBIM
         case heic
+        case jfif
         case imageFile = "file"
     }
     
@@ -80,6 +81,10 @@ extension ImageMetadata: Encodable {
 
         if options.contains(.heic) {
             try container.encodeIfPresent(heic, forKey: .heic)
+        }
+
+        if options.contains(.jfif) {
+            try container.encodeIfPresent(jfif, forKey: .jfif)
         }
 
         if let imageFile {

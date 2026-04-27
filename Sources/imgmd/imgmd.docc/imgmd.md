@@ -5,7 +5,7 @@
 Outputs metadata from the supplied image files as JSON.
 
 ```
-imgmd [--basic] [--exif] [--no-exif] [--gps] [--no-gps] [--iptc] [--no-iptc] [--tiff] [--no-tiff] [--dng] [--no-dng] [--png] [--no-png] [--gif] [--no-gif] [--8bim|eight-bim] [--no-8bim|no-eight-bim] [--heic] [--no-heic] [--debug] [<files>...] [--help]
+imgmd [--basic] [--exif] [--no-exif] [--gps] [--no-gps] [--iptc] [--no-iptc] [--tiff] [--no-tiff] [--dng] [--no-dng] [--png] [--no-png] [--gif] [--no-gif] [--8bim|eight-bim] [--no-8bim|no-eight-bim] [--heic] [--no-heic] [--jfif] [--no-jfif] [--debug] [<files>...] [--help]
 ```
 
 All metadata is output by default. Use the options to limit what metadata is displayed.
@@ -103,6 +103,16 @@ All metadata is output by default. Use the options to limit what metadata is dis
 **--no-heic:**
 
 *Include HEIC metadata.*
+
+
+**--jfif:**
+
+*Include JFIF metadata.*
+
+
+**--no-jfif:**
+
+*Include JFIF metadata.*
 
 
 **--debug:**

@@ -380,11 +380,7 @@ public struct EXIF: Metadata {
         self.flashEnergy = rawValue[kCGImagePropertyExifFlashEnergy] as? Double
         self.flash = rawValue[kCGImagePropertyExifFlash] as? Int
         
-        if let components = rawValue[kCGImagePropertyExifFlashPixVersion] as? [CustomStringConvertible] {
-            self.flashPixVersion = components.map({ String(describing: $0) }).joined(separator: ".")
-        } else {
-            self.flashPixVersion = nil
-        }
+        self.flashPixVersion = Self.versionString(rawValue[kCGImagePropertyExifFlashPixVersion])
         
         self.fNumber = rawValue[kCGImagePropertyExifFNumber] as? Double
         self.focalLength = rawValue[kCGImagePropertyExifFocalLength] as? Double
@@ -454,11 +450,7 @@ public struct EXIF: Metadata {
         self.subsecTime = rawValue[kCGImagePropertyExifSubsecTime] as? String
         self.userComment = rawValue[kCGImagePropertyExifUserComment] as? String
         
-        if let components = rawValue[kCGImagePropertyExifVersion] as? [CustomStringConvertible] {
-            self.version = components.map({ String(describing: $0) }).joined(separator: ".")
-        } else {
-            self.version = nil
-        }
+        self.version = Self.versionString(rawValue[kCGImagePropertyExifVersion])
         
         self.whiteBalance = (rawValue[kCGImagePropertyExifWhiteBalance] as? Int)
             .map({ EXIF.WhiteBalance(rawValue: $0) }) ?? nil

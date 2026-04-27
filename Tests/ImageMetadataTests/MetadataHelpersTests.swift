@@ -106,4 +106,28 @@ struct MetadataHelpersTests {
         #expect(result.contains("k0"))
         #expect(result.contains("k1"))
     }
+
+    // MARK: - versionString
+
+    @Test("versionString returns nil for non-array inputs", arguments: [
+        nil as (any Sendable)?,
+        NSNull(),
+        "1.4.0",
+        42,
+    ])
+    func versionStringReturnsNil(input: (any Sendable)?) {
+        #expect(TestMetadata.versionString(input) == nil)
+    }
+
+    @Test("versionString joins component arrays with dots")
+    func versionStringJoinsComponents() {
+        #expect(TestMetadata.versionString([1, 4, 0, 0]) == "1.4.0.0")
+        #expect(TestMetadata.versionString([2, 3, 2]) == "2.3.2")
+        #expect(TestMetadata.versionString([1, 2]) == "1.2")
+    }
+
+    @Test("versionString returns empty string for empty array")
+    func versionStringEmpty() {
+        #expect(TestMetadata.versionString([] as [Int]) == "")
+    }
 }
