@@ -368,7 +368,7 @@ struct DNGTests {
 
     @Test("previewDateTime falls back to EXIF YYYY:MM:DD HH:MM:SS form")
     func previewDateTimeExifFallback() throws {
-        let raw = Self.sampleRawDNG().mutableCopy() as! NSMutableDictionary
+        let raw = try #require(Self.sampleRawDNG().mutableCopy() as? NSMutableDictionary)
         raw[kCGImagePropertyDNGPreviewDateTime] = "2025:02:13 15:34:57"
 
         let dng = DNG(rawValue: raw)
@@ -459,8 +459,8 @@ struct DNGTests {
     }
 
     @Test("Missing or malformed values produce nils")
-    func missingOrMalformedValues() {
-        let raw = Self.sampleRawDNG().mutableCopy() as! NSMutableDictionary
+    func missingOrMalformedValues() throws {
+        let raw = try #require(Self.sampleRawDNG().mutableCopy() as? NSMutableDictionary)
         raw[kCGImagePropertyDNGBaselineExposure] = "not-a-double"
         raw[kCGImagePropertyDNGBayerGreenSplit] = NSNull()
         raw[kCGImagePropertyDNGPreviewDateTime] = "garbage"

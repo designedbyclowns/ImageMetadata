@@ -66,12 +66,14 @@ struct HEICTests {
         #expect(json["delayTime"] as? Double == 0.04)
         #expect(json["unclampedDelayTime"] as? Double == 0.0333)
         #expect(json["loopCount"] as? Int == 0)
-        #expect((json["frameInfoArray"] as? [String])?.count == 2)
+
+        let frames = try #require(json["frameInfoArray"] as? [String])
+        #expect(frames.count == 2)
     }
 
     @Test("Missing or malformed values produce nils")
-    func missingOrMalformedValues() {
-        let raw = Self.sampleRawHEIC().mutableCopy() as! NSMutableDictionary
+    func missingOrMalformedValues() throws {
+        let raw = try #require(Self.sampleRawHEIC().mutableCopy() as? NSMutableDictionary)
         raw[kCGImagePropertyHEICSDelayTime] = "not-a-double"
         raw[kCGImagePropertyHEICSLoopCount] = NSNull()
         raw.removeObject(forKey: kCGImagePropertyHEICSCanvasPixelWidth)
