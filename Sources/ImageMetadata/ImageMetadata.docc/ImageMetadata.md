@@ -29,6 +29,7 @@ See <doc:Usage>.
 - ``PNG``
 - ``GIF``
 - ``EightBIM``
+- ``HEIC``
 
 ### Creating an `ImageMetadata` type.
 
