@@ -83,12 +83,13 @@ struct GIFTests {
         // Replaced with byte count.
         #expect(json["imageColorMap"] as? Int == 768)
         // Stringified frame entries.
-        #expect((json["frameInfoArray"] as? [String])?.count == 3)
+        let frames = try #require(json["frameInfoArray"] as? [String])
+        #expect(frames.count == 3)
     }
 
     @Test("Missing or malformed values produce nils")
-    func missingOrMalformedValues() {
-        let raw = Self.sampleRawGIF().mutableCopy() as! NSMutableDictionary
+    func missingOrMalformedValues() throws {
+        let raw = try #require(Self.sampleRawGIF().mutableCopy() as? NSMutableDictionary)
         raw[kCGImagePropertyGIFDelayTime] = "not-a-double"
         raw[kCGImagePropertyGIFLoopCount] = NSNull()
         raw.removeObject(forKey: kCGImagePropertyGIFCanvasPixelWidth)

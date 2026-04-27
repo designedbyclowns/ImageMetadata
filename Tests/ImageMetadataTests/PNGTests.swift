@@ -173,8 +173,8 @@ struct PNGTests {
     }
 
     @Test("Missing or malformed values produce nils")
-    func missingOrMalformedValues() {
-        let raw = Self.sampleRawPNG().mutableCopy() as! NSMutableDictionary
+    func missingOrMalformedValues() throws {
+        let raw = try #require(Self.sampleRawPNG().mutableCopy() as? NSMutableDictionary)
         raw[kCGImagePropertyPNGGamma] = "not-a-double"
         raw[kCGImagePropertyPNGCreationTime] = "garbage"
         raw[kCGImagePropertyPNGsRGBIntent] = NSNull()

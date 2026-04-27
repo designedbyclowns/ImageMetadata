@@ -11,14 +11,15 @@ struct MetadataHelpersTests {
 
     // MARK: - intArray
 
-    @Test("intArray returns nil for nil input")
-    func intArrayNil() {
-        #expect(TestMetadata.intArray(nil) == nil)
-    }
-
-    @Test("intArray returns nil for NSNull")
-    func intArrayNSNull() {
-        #expect(TestMetadata.intArray(NSNull()) == nil)
+    @Test("intArray returns nil for non-array or wrong-element inputs", arguments: [
+        nil as (any Sendable)?,
+        NSNull(),
+        "not an array",
+        42,
+        ["1", "2"],
+    ])
+    func intArrayReturnsNil(input: (any Sendable)?) {
+        #expect(TestMetadata.intArray(input) == nil)
     }
 
     @Test("intArray passes through a native [Int]")
@@ -44,27 +45,16 @@ struct MetadataHelpersTests {
         #expect(TestMetadata.intArray([] as [NSNumber]) == [])
     }
 
-    @Test("intArray returns nil for non-array input")
-    func intArrayWrongType() {
-        #expect(TestMetadata.intArray("not an array") == nil)
-        #expect(TestMetadata.intArray(42) == nil)
-    }
-
-    @Test("intArray returns nil for [String]")
-    func intArrayWrongElementType() {
-        #expect(TestMetadata.intArray(["1", "2"]) == nil)
-    }
-
     // MARK: - doubleArray
 
-    @Test("doubleArray returns nil for nil input")
-    func doubleArrayNil() {
-        #expect(TestMetadata.doubleArray(nil) == nil)
-    }
-
-    @Test("doubleArray returns nil for NSNull")
-    func doubleArrayNSNull() {
-        #expect(TestMetadata.doubleArray(NSNull()) == nil)
+    @Test("doubleArray returns nil for non-array inputs", arguments: [
+        nil as (any Sendable)?,
+        NSNull(),
+        "not an array",
+        3.14,
+    ])
+    func doubleArrayReturnsNil(input: (any Sendable)?) {
+        #expect(TestMetadata.doubleArray(input) == nil)
     }
 
     @Test("doubleArray passes through a native [Double]")
@@ -90,22 +80,14 @@ struct MetadataHelpersTests {
         #expect(TestMetadata.doubleArray([] as [NSNumber]) == [])
     }
 
-    @Test("doubleArray returns nil for non-array input")
-    func doubleArrayWrongType() {
-        #expect(TestMetadata.doubleArray("not an array") == nil)
-        #expect(TestMetadata.doubleArray(3.14) == nil)
-    }
-
     // MARK: - describe
 
-    @Test("describe returns nil for nil input")
-    func describeNil() {
-        #expect(TestMetadata.describe(nil) == nil)
-    }
-
-    @Test("describe returns nil for NSNull")
-    func describeNSNull() {
-        #expect(TestMetadata.describe(NSNull()) == nil)
+    @Test("describe returns nil for nil or NSNull", arguments: [
+        nil as (any Sendable)?,
+        NSNull(),
+    ])
+    func describeReturnsNil(input: (any Sendable)?) {
+        #expect(TestMetadata.describe(input) == nil)
     }
 
     @Test("describe stringifies common scalar values")
