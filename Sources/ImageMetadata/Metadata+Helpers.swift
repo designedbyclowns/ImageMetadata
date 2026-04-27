@@ -24,4 +24,11 @@ extension Metadata {
         guard let value, !(value is NSNull) else { return nil }
         return String(describing: value)
     }
+
+    /// Join the components of a version-tag array (e.g. `[1, 4, 0, 0]`) into
+    /// a dotted string (`"1.4.0.0"`).
+    static func versionString(_ value: Any?) -> String? {
+        guard let components = value as? [CustomStringConvertible] else { return nil }
+        return components.map { String(describing: $0) }.joined(separator: ".")
+    }
 }

@@ -83,6 +83,9 @@ public struct ImageMetadata: Metadata {
     /// Metadata for High Efficiency Image Coding (HEIC) sequences (animated HEIC).
     public let heic: HEIC?
 
+    /// Metadata for the JPEG File Interchange Format (JFIF) container.
+    public let jfif: JFIF?
+
     public private(set) var imageFile: ImageFile?
     
 
@@ -179,6 +182,12 @@ public struct ImageMetadata: Metadata {
             self.heic = HEIC(rawValue: heicDictionary)
         } else {
             self.heic = nil
+        }
+
+        if options.contains(.jfif), let jfifDictionary = rawValue[kCGImagePropertyJFIFDictionary] as? NSDictionary {
+            self.jfif = JFIF(rawValue: jfifDictionary)
+        } else {
+            self.jfif = nil
         }
 
         // Defaults that may be updated in other initializers

@@ -30,6 +30,7 @@ See <doc:Usage>.
 - ``GIF``
 - ``EightBIM``
 - ``HEIC``
+- ``JFIF``
 
 ### Creating an `ImageMetadata` type.
 

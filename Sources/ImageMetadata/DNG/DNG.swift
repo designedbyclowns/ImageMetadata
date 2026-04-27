@@ -427,11 +427,4 @@ public struct DNG: Metadata {
         self.makerNoteSafety = rawValue[kCGImagePropertyDNGMakerNoteSafety] as? Int
         self.privateData = rawValue[kCGImagePropertyDNGPrivateData] as? Data
     }
-
-    // MARK: - Helpers
-
-    private static func versionString(_ value: Any?) -> String? {
-        guard let components = value as? [CustomStringConvertible] else { return nil }
-        return components.map { String(describing: $0) }.joined(separator: ".")
-    }
 }
