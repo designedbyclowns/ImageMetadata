@@ -23,6 +23,7 @@ extension ImageMetadata: Encodable {
         case dng
         case png
         case gif
+        case eightBIM
         case imageFile = "file"
     }
     
@@ -70,6 +71,10 @@ extension ImageMetadata: Encodable {
 
         if options.contains(.gif) {
             try container.encodeIfPresent(gif, forKey: .gif)
+        }
+
+        if options.contains(.eightBIM) {
+            try container.encodeIfPresent(eightBIM, forKey: .eightBIM)
         }
 
         if let imageFile {
