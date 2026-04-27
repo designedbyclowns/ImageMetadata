@@ -4,7 +4,7 @@ import ImageMetadata
 import UniformTypeIdentifiers
 
 fileprivate enum MetadataType: String, EnumerableFlag {
-    case exif, iptc, tiff, gps, dng
+    case exif, iptc, tiff, gps, dng, png
 }
 
 fileprivate extension MetadataType {
@@ -20,6 +20,8 @@ fileprivate extension MetadataType {
             return .gps
         case .dng:
             return .dng
+        case .png:
+            return .png
         }
     }
 }
@@ -52,6 +54,9 @@ struct imgmd: ParsableCommand {
 
     @Flag(name: .long, inversion: .prefixedNo, help: "Include DNG metadata.")
     var dng: Bool = false
+
+    @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include PNG metadata.")
+    var png: Bool = false
 
     @Flag(name: .shortAndLong, help: "Show the raw metadata.")
     var debug: Bool = false
@@ -86,6 +91,7 @@ struct imgmd: ParsableCommand {
         if tiff { metadataOptions.insert(.tiff) }
         if gps { metadataOptions.insert(.gps) }
         if dng { metadataOptions.insert(.dng) }
+        if png { metadataOptions.insert(.png) }
 
         if basic {
             metadataOptions = MetadataOptions.none
@@ -95,8 +101,13 @@ struct imgmd: ParsableCommand {
 
         let imagesMetadata = try files.map { url -> ImageMetadata in
             var options = metadataOptions
-            if !basic, Self.isDNG(url: url) {
-                options.insert(.dng)
+            if !basic {
+                if Self.conforms(url: url, to: .dng) {
+                    options.insert(.dng)
+                }
+                if Self.conforms(url: url, to: .png) {
+                    options.insert(.png)
+                }
             }
             return try ImageMetadata(url: url, options: options)
         }
@@ -118,11 +129,11 @@ struct imgmd: ParsableCommand {
         print(String(decoding: json, as: UTF8.self))
     }
 
-    private static func isDNG(url: URL) -> Bool {
+    private static func conforms(url: URL, to target: UTType) -> Bool {
         guard let values = try? url.resourceValues(forKeys: [.contentTypeKey]),
               let type = values.contentType else {
             return false
         }
-        return type.conforms(to: .dng)
+        return type.conforms(to: target)
     }
 }

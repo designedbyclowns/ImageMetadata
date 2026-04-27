@@ -70,6 +70,9 @@ public struct ImageMetadata: Metadata {
     /// Metadata for an image that uses Adobe's Digital Negative (DNG) raw format.
     public let dng: DNG?
 
+    /// Metadata for an image that uses Portable Network Graphics (PNG) format.
+    public let png: PNG?
+
     public private(set) var imageFile: ImageFile?
     
 
@@ -136,13 +139,19 @@ public struct ImageMetadata: Metadata {
         } else {
             self.gps = nil
         }
-        
+
         if options.contains(.dng), let dngDictionary = rawValue[kCGImagePropertyDNGDictionary] as? NSDictionary {
             self.dng = DNG(rawValue: dngDictionary)
         } else {
             self.dng = nil
         }
-        
+
+        if options.contains(.png), let pngDictionary = rawValue[kCGImagePropertyPNGDictionary] as? NSDictionary {
+            self.png = PNG(rawValue: pngDictionary)
+        } else {
+            self.png = nil
+        }
+
         // Defaults that may be updated in other initializers
         self.contentType = nil
         self.imageFile = nil
