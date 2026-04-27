@@ -4,7 +4,7 @@ import ImageMetadata
 import UniformTypeIdentifiers
 
 fileprivate enum MetadataType: String, EnumerableFlag {
-    case exif, iptc, tiff, gps, dng, png, gif, eightBIM
+    case exif, iptc, tiff, gps, dng, png, gif, eightBIM, heic
 }
 
 fileprivate extension MetadataType {
@@ -26,6 +26,8 @@ fileprivate extension MetadataType {
             return .gif
         case .eightBIM:
             return .eightBIM
+        case .heic:
+            return .heic
         }
     }
 }
@@ -68,6 +70,9 @@ struct imgmd: ParsableCommand {
     @Flag(name: [.customLong("8bim"), .customLong("eight-bim")], inversion: .prefixedNo, help: "Include 8BIM (Photoshop) metadata.")
     var eightBIM: Bool = false
 
+    @Flag(name: .long, inversion: .prefixedNo, help: "Include HEIC metadata.")
+    var heic: Bool = false
+
     @Flag(name: .shortAndLong, help: "Show the raw metadata.")
     var debug: Bool = false
     
@@ -104,6 +109,7 @@ struct imgmd: ParsableCommand {
         if png { metadataOptions.insert(.png) }
         if gif { metadataOptions.insert(.gif) }
         if eightBIM { metadataOptions.insert(.eightBIM) }
+        if heic { metadataOptions.insert(.heic) }
 
         if basic {
             metadataOptions = MetadataOptions.none
@@ -125,6 +131,9 @@ struct imgmd: ParsableCommand {
                 }
                 if let psd = UTType("com.adobe.photoshop-image"), Self.conforms(url: url, to: psd) {
                     options.insert(.eightBIM)
+                }
+                if Self.conforms(url: url, to: .heic) || Self.conforms(url: url, to: .heics) {
+                    options.insert(.heic)
                 }
             }
             return try ImageMetadata(url: url, options: options)

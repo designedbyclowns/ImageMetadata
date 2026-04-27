@@ -80,6 +80,9 @@ public struct ImageMetadata: Metadata {
     /// PSD files but also embedded in JPEGs and TIFFs touched by Photoshop.
     public let eightBIM: EightBIM?
 
+    /// Metadata for High Efficiency Image Coding (HEIC) sequences (animated HEIC).
+    public let heic: HEIC?
+
     public private(set) var imageFile: ImageFile?
     
 
@@ -169,6 +172,12 @@ public struct ImageMetadata: Metadata {
             self.eightBIM = EightBIM(rawValue: eightBIMDictionary)
         } else {
             self.eightBIM = nil
+        }
+
+        if options.contains(.heic), let heicDictionary = rawValue[kCGImagePropertyHEICSDictionary] as? NSDictionary {
+            self.heic = HEIC(rawValue: heicDictionary)
+        } else {
+            self.heic = nil
         }
 
         // Defaults that may be updated in other initializers

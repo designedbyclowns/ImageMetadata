@@ -87,6 +87,7 @@ OPTIONS:
   --gif/--no-gif          Include GIF metadata. (default: --no-gif)
   --8bim, --eight-bim/--no-8bim, --no-eight-bim
                           Include 8BIM (Photoshop) metadata. (default: --no-8bim)
+  --heic/--no-heic        Include HEIC metadata. (default: --no-heic)
   -d, --debug             Show the raw metadata.
   -h, --help              Show help information.
 
