@@ -4,7 +4,7 @@ import ImageMetadata
 import UniformTypeIdentifiers
 
 fileprivate enum MetadataType: String, EnumerableFlag {
-    case exif, iptc, tiff, gps, dng, png, gif, eightBIM, heic, jfif, webP
+    case exif, iptc, tiff, gps
 }
 
 fileprivate extension MetadataType {
@@ -18,20 +18,6 @@ fileprivate extension MetadataType {
             return .tiff
         case .gps:
             return .gps
-        case .dng:
-            return .dng
-        case .png:
-            return .png
-        case .gif:
-            return .gif
-        case .eightBIM:
-            return .eightBIM
-        case .heic:
-            return .heic
-        case .jfif:
-            return .jfif
-        case .webP:
-            return .webP
         }
     }
 }
@@ -51,37 +37,16 @@ struct imgmd: ParsableCommand {
     var basic: Bool = false
     
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include EXIF metadata.")
-    var exif: Bool = false
-    
+    var exif: Bool = true
+
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include GPS metadata.")
-    var gps: Bool = false
-    
+    var gps: Bool = true
+
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include IPTC metadata.")
-    var iptc: Bool = false
-    
+    var iptc: Bool = true
+
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include TIFF metadata.")
-    var tiff: Bool = false
-
-    @Flag(name: .long, inversion: .prefixedNo, help: "Include DNG metadata.")
-    var dng: Bool = false
-
-    @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include PNG metadata.")
-    var png: Bool = false
-
-    @Flag(name: .long, inversion: .prefixedNo, help: "Include GIF metadata.")
-    var gif: Bool = false
-
-    @Flag(name: [.customLong("8bim"), .customLong("eight-bim")], inversion: .prefixedNo, help: "Include 8BIM (Photoshop) metadata.")
-    var eightBIM: Bool = false
-
-    @Flag(name: .long, inversion: .prefixedNo, help: "Include HEIC metadata.")
-    var heic: Bool = false
-
-    @Flag(name: .long, inversion: .prefixedNo, help: "Include JFIF metadata.")
-    var jfif: Bool = false
-
-    @Flag(name: .customLong("webp"), inversion: .prefixedNo, help: "Include WebP metadata.")
-    var webP: Bool = false
+    var tiff: Bool = true
 
     @Flag(name: .shortAndLong, help: "Show the raw metadata.")
     var debug: Bool = false
@@ -115,18 +80,9 @@ struct imgmd: ParsableCommand {
         if iptc { metadataOptions.insert(.iptc) }
         if tiff { metadataOptions.insert(.tiff) }
         if gps { metadataOptions.insert(.gps) }
-        if dng { metadataOptions.insert(.dng) }
-        if png { metadataOptions.insert(.png) }
-        if gif { metadataOptions.insert(.gif) }
-        if eightBIM { metadataOptions.insert(.eightBIM) }
-        if heic { metadataOptions.insert(.heic) }
-        if jfif { metadataOptions.insert(.jfif) }
-        if webP { metadataOptions.insert(.webP) }
 
         if basic {
             metadataOptions = MetadataOptions.none
-        } else if metadataOptions.isEmpty {
-            metadataOptions = MetadataOptions.all
         }
 
         let imagesMetadata = try files.map { url -> ImageMetadata in
@@ -140,6 +96,11 @@ struct imgmd: ParsableCommand {
                 }
                 if Self.conforms(url: url, to: .gif) {
                     options.insert(.gif)
+                }
+                // 8BIM blocks live in PSD, but Photoshop also embeds them in
+                // JPEGs and TIFFs it has touched.
+                if Self.conforms(url: url, to: .jpeg) || Self.conforms(url: url, to: .tiff) {
+                    options.insert(.eightBIM)
                 }
                 if let psd = UTType("com.adobe.photoshop-image"), Self.conforms(url: url, to: psd) {
                     options.insert(.eightBIM)

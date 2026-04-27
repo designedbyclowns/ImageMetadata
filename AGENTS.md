@@ -60,9 +60,10 @@ Each metadata family lives in its own folder and follows the same pattern:
 ### CLI (`imgmd`)
 
 `Sources/imgmd/imgmd.swift` is a single `ParsableCommand`. The flag-to-option mapping lives in `run()`:
-- `--basic` forces `MetadataOptions.none`.
+- The CLI exposes flags only for cross-format namespaces: `--exif`, `--iptc`, `--tiff`, `--gps`. Format-specific namespaces (DNG, PNG, GIF, HEIC, JFIF, WebP, 8BIM) have no flags — they're auto-included via UTI matching when the input file's content type conforms to a known format. UTI lookup uses `URL.resourceValues(forKeys: [.contentTypeKey])`.
+- 8BIM is auto-included for PSD, JPEG, and TIFF (Photoshop embeds 8BIM blocks in those formats).
+- `--basic` forces `MetadataOptions.none` and suppresses the auto-include path entirely.
 - If no metadata flag is set, defaults to `.all`.
-- For each input file the CLI also auto-adds `.dng` to that file's options when its UTI conforms to `UTType.dng` (looked up via `URL.resourceValues(forKeys: [.contentTypeKey])`). `--basic` suppresses this auto-include.
 - `--debug` short-circuits to printing the raw ImageIO dictionary via `ImageMetadata.getProperties(url:)`.
 
 ## Tests

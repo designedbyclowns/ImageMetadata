@@ -71,27 +71,21 @@ OVERVIEW: Outputs metadata from the supplied image files as JSON.
 All metadata is output by default. Use the options to limit what metadata is
 displayed.
 
-USAGE: imgmd [<options>] [<files> ...]
+USAGE: imgmd [--basic] [--exif] [--no-exif] [--gps] [--no-gps] [--iptc] [--no-iptc] [--tiff] [--no-tiff] [--debug] [<files> ...]
 
 ARGUMENTS:
   <files>                 Image files.
 
 OPTIONS:
   -b, --basic             Basic. Don't include other metadata.
-  -e, --exif/--no-exif    Include EXIF metadata. (default: --no-exif)
-  -g, --gps/--no-gps      Include GPS metadata. (default: --no-gps)
-  -i, --iptc/--no-iptc    Include IPTC metadata. (default: --no-iptc)
-  -t, --tiff/--no-tiff    Include TIFF metadata. (default: --no-tiff)
-  --dng/--no-dng          Include DNG metadata. (default: --no-dng)
-  -p, --png/--no-png      Include PNG metadata. (default: --no-png)
-  --gif/--no-gif          Include GIF metadata. (default: --no-gif)
-  --8bim, --eight-bim/--no-8bim, --no-eight-bim
-                          Include 8BIM (Photoshop) metadata. (default: --no-8bim)
-  --heic/--no-heic        Include HEIC metadata. (default: --no-heic)
-  --jfif/--no-jfif        Include JFIF metadata. (default: --no-jfif)
-  --webp/--no-webp        Include WebP metadata. (default: --no-webp)
+  -e, --exif/--no-exif    Include EXIF metadata. (default: --exif)
+  -g, --gps/--no-gps      Include GPS metadata. (default: --gps)
+  -i, --iptc/--no-iptc    Include IPTC metadata. (default: --iptc)
+  -t, --tiff/--no-tiff    Include TIFF metadata. (default: --tiff)
   -d, --debug             Show the raw metadata.
   -h, --help              Show help information.
+
+Format-specific metadata (DNG, PNG, GIF, HEIC, JFIF, WebP, 8BIM) is auto-included when the file's content type matches. 8BIM is also auto-included for JPEG and TIFF files (where Photoshop often embeds it).
 
 Program ended with exit code: 0
 ```sh
