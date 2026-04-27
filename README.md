@@ -89,6 +89,7 @@ OPTIONS:
                           Include 8BIM (Photoshop) metadata. (default: --no-8bim)
   --heic/--no-heic        Include HEIC metadata. (default: --no-heic)
   --jfif/--no-jfif        Include JFIF metadata. (default: --no-jfif)
+  --webp/--no-webp        Include WebP metadata. (default: --no-webp)
   -d, --debug             Show the raw metadata.
   -h, --help              Show help information.
 
