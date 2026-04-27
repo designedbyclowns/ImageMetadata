@@ -430,23 +430,6 @@ public struct DNG: Metadata {
 
     // MARK: - Helpers
 
-    private static func intArray(_ value: Any?) -> [Int]? {
-        if let arr = value as? [Int] { return arr }
-        if let arr = value as? [NSNumber] { return arr.map(\.intValue) }
-        return nil
-    }
-
-    private static func doubleArray(_ value: Any?) -> [Double]? {
-        if let arr = value as? [Double] { return arr }
-        if let arr = value as? [NSNumber] { return arr.map(\.doubleValue) }
-        return nil
-    }
-
-    private static func describe(_ value: Any?) -> String? {
-        guard let value, !(value is NSNull) else { return nil }
-        return String(describing: value)
-    }
-
     private static func versionString(_ value: Any?) -> String? {
         guard let components = value as? [CustomStringConvertible] else { return nil }
         return components.map { String(describing: $0) }.joined(separator: ".")

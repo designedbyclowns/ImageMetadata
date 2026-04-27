@@ -109,18 +109,6 @@ public struct PNG: Metadata {
 
     // MARK: - Helpers
 
-    private static func intArray(_ value: Any?) -> [Int]? {
-        if let arr = value as? [Int] { return arr }
-        if let arr = value as? [NSNumber] { return arr.map(\.intValue) }
-        return nil
-    }
-
-    private static func doubleArray(_ value: Any?) -> [Double]? {
-        if let arr = value as? [Double] { return arr }
-        if let arr = value as? [NSNumber] { return arr.map(\.doubleValue) }
-        return nil
-    }
-
     /// PNG date strings are inconsistent in the wild. The PNG spec recommends
     /// RFC 1123 format (e.g. "Mon, 17 Jan 2000 07:34:51 GMT"); ISO 8601 is also
     /// common. Try both before giving up.
