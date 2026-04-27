@@ -6,10 +6,10 @@ let package = Package(
     name: "ImageMetadata",
     defaultLocalization: "en-US",
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
-        .watchOS(.v10),
-        .tvOS(.v17),
+        .macOS(.v15),
+        .iOS(.v18),
+        .watchOS(.v11),
+        .tvOS(.v18),
     ],
     products: [
         .library(name: "ImageMetadata", targets: ["ImageMetadata"]),

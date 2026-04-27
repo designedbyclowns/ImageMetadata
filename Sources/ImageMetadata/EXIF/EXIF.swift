@@ -500,15 +500,17 @@ public struct EXIF: Metadata {
     
     static private func timeZone(forOffset offset: String?) -> TimeZone? {
         guard let offset, !offset.isEmpty else { return nil }
-        
+
+        let isNegative = offset.hasPrefix("-")
         let components = offset.split(separator: ":").compactMap { try? Int(String($0), format: .number) }
         guard components.count >= 1, components.count <= 2 else { return nil }
-        
-        var seconds = components[0] * 60 * 60
+
+        var seconds = abs(components[0]) * 60 * 60
         if components.count == 2 {
-            seconds += components[1] * 60
+            seconds += abs(components[1]) * 60
         }
-        
+        if isNegative { seconds = -seconds }
+
         return TimeZone(secondsFromGMT: Int(seconds))
     }
 }

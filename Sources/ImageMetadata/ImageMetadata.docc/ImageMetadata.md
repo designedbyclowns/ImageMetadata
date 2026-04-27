@@ -25,6 +25,7 @@ See <doc:Usage>.
 - ``IPTC``
 - ``TIFF``
 - ``GPS``
+- ``DNG``
 
 ### Creating an `ImageMetadata` type.
 

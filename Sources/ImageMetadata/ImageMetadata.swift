@@ -66,7 +66,10 @@ public struct ImageMetadata: Metadata {
     
     /// Metadata for an image that has Global Positioning System (GPS) information.
     public let gps: GPS?
-    
+
+    /// Metadata for an image that uses Adobe's Digital Negative (DNG) raw format.
+    public let dng: DNG?
+
     public private(set) var imageFile: ImageFile?
     
 
@@ -132,6 +135,12 @@ public struct ImageMetadata: Metadata {
             self.gps = GPS(rawValue: gpsDictionary)
         } else {
             self.gps = nil
+        }
+        
+        if options.contains(.dng), let dngDictionary = rawValue[kCGImagePropertyDNGDictionary] as? NSDictionary {
+            self.dng = DNG(rawValue: dngDictionary)
+        } else {
+            self.dng = nil
         }
         
         // Defaults that may be updated in other initializers

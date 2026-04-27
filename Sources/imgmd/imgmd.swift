@@ -1,9 +1,10 @@
 import Foundation
 import ArgumentParser
 import ImageMetadata
+import UniformTypeIdentifiers
 
 fileprivate enum MetadataType: String, EnumerableFlag {
-    case exif, iptc, tiff, gps
+    case exif, iptc, tiff, gps, dng
 }
 
 fileprivate extension MetadataType {
@@ -17,6 +18,8 @@ fileprivate extension MetadataType {
             return .tiff
         case .gps:
             return .gps
+        case .dng:
+            return .dng
         }
     }
 }
@@ -46,7 +49,10 @@ struct imgmd: ParsableCommand {
     
     @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include TIFF metadata.")
     var tiff: Bool = false
-    
+
+    @Flag(name: .long, inversion: .prefixedNo, help: "Include DNG metadata.")
+    var dng: Bool = false
+
     @Flag(name: .shortAndLong, help: "Show the raw metadata.")
     var debug: Bool = false
     
@@ -55,6 +61,7 @@ struct imgmd: ParsableCommand {
         completion: .file(),
         transform: {
             URL.init(fileURLWithPath: $0)
+     
         }
     )
     var files: [URL] = []
@@ -78,15 +85,20 @@ struct imgmd: ParsableCommand {
         if iptc { metadataOptions.insert(.iptc) }
         if tiff { metadataOptions.insert(.tiff) }
         if gps { metadataOptions.insert(.gps) }
-        
+        if dng { metadataOptions.insert(.dng) }
+
         if basic {
             metadataOptions = MetadataOptions.none
         } else if metadataOptions.isEmpty {
             metadataOptions = MetadataOptions.all
         }
-        
-        let imagesMetadata = try files.map {
-            try ImageMetadata(url: $0, options: metadataOptions)
+
+        let imagesMetadata = try files.map { url -> ImageMetadata in
+            var options = metadataOptions
+            if !basic, Self.isDNG(url: url) {
+                options.insert(.dng)
+            }
+            return try ImageMetadata(url: url, options: options)
         }
         
         guard !imagesMetadata.isEmpty else { return }
@@ -104,5 +116,13 @@ struct imgmd: ParsableCommand {
         }
         
         print(String(decoding: json, as: UTF8.self))
+    }
+
+    private static func isDNG(url: URL) -> Bool {
+        guard let values = try? url.resourceValues(forKeys: [.contentTypeKey]),
+              let type = values.contentType else {
+            return false
+        }
+        return type.conforms(to: .dng)
     }
 }
