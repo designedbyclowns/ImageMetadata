@@ -21,6 +21,7 @@ extension ImageMetadata: Encodable {
         case tiff
         case gps
         case dng
+        case png
         case imageFile = "file"
     }
     
@@ -60,6 +61,10 @@ extension ImageMetadata: Encodable {
 
         if options.contains(.dng) {
             try container.encodeIfPresent(dng, forKey: .dng)
+        }
+
+        if options.contains(.png) {
+            try container.encodeIfPresent(png, forKey: .png)
         }
 
         if let imageFile {

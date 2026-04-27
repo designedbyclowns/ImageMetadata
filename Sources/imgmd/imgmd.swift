@@ -4,7 +4,7 @@ import ImageMetadata
 import UniformTypeIdentifiers
 
 fileprivate enum MetadataType: String, EnumerableFlag {
-    case exif, iptc, tiff, gps, dng
+    case exif, iptc, tiff, gps, dng, png
 }
 
 fileprivate extension MetadataType {
@@ -20,6 +20,8 @@ fileprivate extension MetadataType {
             return .gps
         case .dng:
             return .dng
+        case .png:
+            return .png
         }
     }
 }
@@ -52,6 +54,9 @@ struct imgmd: ParsableCommand {
 
     @Flag(name: .long, inversion: .prefixedNo, help: "Include DNG metadata.")
     var dng: Bool = false
+
+    @Flag(name: .shortAndLong, inversion: .prefixedNo, help: "Include PNG metadata.")
+    var png: Bool = false
 
     @Flag(name: .shortAndLong, help: "Show the raw metadata.")
     var debug: Bool = false
@@ -86,6 +91,7 @@ struct imgmd: ParsableCommand {
         if tiff { metadataOptions.insert(.tiff) }
         if gps { metadataOptions.insert(.gps) }
         if dng { metadataOptions.insert(.dng) }
+        if png { metadataOptions.insert(.png) }
 
         if basic {
             metadataOptions = MetadataOptions.none
